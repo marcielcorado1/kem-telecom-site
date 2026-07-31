@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kem Telecom — Internet Fibra com Hub de IA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green: #3db800;
+      --green-dark: #2a8a00;
+      --green-light: #5ed400;
+      --ia-purple: #6d28d9;
+      --ia-purple-dark: #1a0533;
+      --ia-purple-mid: #4c1d95;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: #f4f4f4; color: #222; }
+
+    /* ─── HEADER ─── */
+    header {
+      background: #fff;
+      padding: 0 60px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 40px; }
+
+    .logo { display: flex; flex-direction: column; line-height: 1; }
+    .logo-name { font-size: 26px; font-weight: 900; color: var(--green); letter-spacing: -1px; }
+    .logo-label { font-size: 9px; font-weight: 600; color: #999; letter-spacing: 3px; text-transform: uppercase; }
+
+    nav { display: flex; gap: 28px; }
+    nav a { text-decoration: none; font-size: 13px; font-weight: 500; color: #555; transition: color .15s; }
+    nav a:hover { color: var(--green); }
+    nav a.active { color: var(--green); font-weight: 700; }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(130deg, #1e7000 0%, var(--green) 55%, var(--green-light) 100%);
+      padding: 52px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+      min-height: 320px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 500px;
+      height: 500px;
+      background: rgba(255,255,255,.05);
+      border-radius: 50%;
+    }
+
+    .hero-text { z-index: 2; max-width: 380px; }
+    .hero-text h1 { font-size: 36px; font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 10px; text-shadow: 0 2px 6px rgba(0,0,0,.2); }
+    .hero-text p { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.6; margin-bottom: 20px; }
+    .hero-sva-note { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 14px; }
+    .hero-sva-note strong { color: rgba(255,255,255,.95); }
+
+    .hero-plan-box {
+      background: rgba(0,0,0,.35);
+      border-radius: 16px;
+      padding: 24px 32px;
+      backdrop-filter: blur(12px);
+      z-index: 2;
+      min-width: 300px;
+    }
+    .hero-speed { display: flex; align-items: baseline; gap: 6px; line-height: 1; }
+    .hero-speed .num { font-size: 78px; font-weight: 900; color: #fff; }
+    .hero-speed .unit { font-size: 22px; font-weight: 700; color: rgba(255,255,255,.8); }
+    .hero-plus { color: rgba(255,255,255,.6); font-size: 22px; font-weight: 300; margin: 6px 0; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .hero-price-box {
+      background: rgba(0,0,0,.35);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-top: 16px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .hero-price-box .from { font-size: 13px; color: rgba(255,255,255,.7); }
+    .hero-price-box .price { font-size: 34px; font-weight: 900; color: #FFE000; }
+    .hero-price-box .per { font-size: 13px; color: rgba(255,255,255,.6); }
+
+    /* ─── SVA LOGOS ─── */
+    .sva-logo { display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+    .sva-max { background: linear-gradient(145deg, #001f2b 0%, #003344 60%, #00506a 100%); border: 1px solid #00728f; padding: 5px 11px; height: 36px; }
+    .sva-watch { background: linear-gradient(160deg, #0b1c3a 0%, #0d2550 100%); border: 1px solid #1e3d70; padding: 4px 10px; height: 36px; flex-direction: column; gap: 1px; }
+    .sva-watch .watch-crown { display: block; }
+    .sva-watch .watch-text { font-size: 9px; font-weight: 900; color: #fff; letter-spacing: 2px; line-height: 1; }
+    .sva-awdio { background: linear-gradient(135deg, #c0392b 0%, #e74c3c 50%, #ff6b35 100%); border: 1px solid #e55; padding: 5px 10px; height: 36px; gap: 4px; }
+    .sva-awdio .awdio-text { font-size: 11px; font-weight: 900; color: #fff; letter-spacing: 1px; line-height: 1; }
+    .sva-hub-ia { background: linear-gradient(135deg, #1a0533 0%, #3b0d82 60%, #6d28d9 100%); border: 1px solid rgba(167,139,250,.55); padding: 5px 11px; height: 36px; gap: 5px; }
+    .sva-hub-ia .hub-ia-text { font-size: 11px; font-weight: 900; color: #fff; letter-spacing: .8px; line-height: 1; }
+
+    /* ─── PRODUCTS SECTION ─── */
+    .products { padding: 64px 60px; background: #fff; }
+    .products h2 { text-align: center; font-size: 26px; font-weight: 800; color: #222; margin-bottom: 48px; position: relative; }
+    .products h2::after { content: ''; display: block; width: 60px; height: 4px; background: var(--green); border-radius: 2px; margin: 10px auto 0; }
+
+    .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 900px; margin: 0 auto; }
+
+    .plan-card {
+      border: 2px solid #e8e8e8;
+      border-radius: 20px;
+      padding: 28px 20px 24px;
+      text-align: center;
+      background: #fff;
+      position: relative;
+      transition: all .25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .plan-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.10); border-color: var(--green); }
+    .plan-card.featured { border-color: var(--green); box-shadow: 0 8px 28px rgba(61,184,0,.18); }
+    .plan-card.featured::before {
+      content: 'MAIS VENDIDO';
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+
+    .plan-label { font-size: 10px; font-weight: 700; color: #aaa; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .plan-speed-block { margin-bottom: 4px; }
+    .plan-speed-block .num { font-size: 64px; font-weight: 900; color: var(--green); line-height: 1; }
+    .plan-speed-block .unit { font-size: 20px; font-weight: 800; color: var(--green); }
+    .plan-name { font-size: 12px; font-weight: 600; color: #777; margin-bottom: 18px; }
+    .plan-badges { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; margin-bottom: 20px; }
+    .plan-divider { width: 100%; border: none; border-top: 1.5px dashed #e8e8e8; margin-bottom: 18px; }
+    .plan-price-val { font-size: 30px; font-weight: 900; color: #111; }
+    .plan-price-val sup { font-size: 14px; font-weight: 700; }
+    .plan-price-val span { font-size: 13px; font-weight: 400; color: #999; }
+    .plan-note { font-size: 10px; color: #bbb; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-top: 4px; }
+    .plan-cta {
+      margin-top: 20px;
+      width: 100%;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      letter-spacing: .3px;
+    }
+    .plan-cta:hover { background: var(--green-dark); }
+
+    /* ─── HUB IA FEATURE SECTION ─── */
+    .hub-ia-section {
+      background: linear-gradient(145deg, var(--ia-purple-dark) 0%, #2d0a6e 50%, #1e1b4b 100%);
+      padding: 72px 60px;
+      color: #fff;
+      text-align: center;
+    }
+    .hub-ia-badge-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(167,139,250,.4);
+      border-radius: 40px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #c4b5fd;
+      margin-bottom: 24px;
+      letter-spacing: .5px;
+    }
+    .hub-ia-badge-hero .spark { font-size: 16px; }
+    .hub-ia-section h2 { font-size: 36px; font-weight: 900; margin-bottom: 16px; background: linear-gradient(135deg, #c4b5fd, #818cf8, #67e8f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hub-ia-section > p { font-size: 16px; color: rgba(255,255,255,.75); line-height: 1.7; max-width: 640px; margin: 0 auto 52px; }
+    .hub-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 960px; margin: 0 auto; }
+    .hub-feature { background: rgba(255,255,255,.04); border: 1px solid rgba(167,139,250,.2); border-radius: 16px; padding: 28px 24px; text-align: left; transition: all .25s; }
+    .hub-feature:hover { background: rgba(255,255,255,.07); border-color: rgba(167,139,250,.5); transform: translateY(-4px); }
+    .hub-feature-icon { font-size: 32px; margin-bottom: 14px; }
+    .hub-feature h3 { font-size: 15px; font-weight: 700; color: #c4b5fd; margin-bottom: 8px; }
+    .hub-feature p { font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.6; }
+    .hub-cta-row { margin-top: 48px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .hub-cta-row a { text-decoration: none; background: var(--ia-purple); color: #fff; padding: 14px 32px; border-radius: 12px; font-weight: 700; font-size: 14px; transition: background .2s; }
+    .hub-cta-row a:hover { background: #5b21b6; }
+    .hub-cta-row span { font-size: 13px; color: rgba(255,255,255,.5); }
+
+    /* ─── FOOTER ─── */
+    footer { background: #111; color: #888; padding: 56px 60px 28px; }
+    .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px; margin-bottom: 48px; }
+    .footer-col h4 { color: var(--green); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 18px; }
+    .footer-col a { display: block; color: #777; text-decoration: none; font-size: 13px; margin-bottom: 9px; transition: color .15s; }
+    .footer-col a:hover { color: var(--green); }
+    .footer-col p { font-size: 13px; color: #666; line-height: 1.7; }
+    .footer-col .sub-section { margin-top: 28px; }
+    .footer-col .sub-section h4 { margin-bottom: 12px; }
+    .payment-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .payment-chip { background: #222; border: 1px solid #333; border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 600; color: #aaa; }
+    .secure-badge { display: inline-flex; align-items: center; gap: 8px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 14px; font-size: 12px; color: #666; }
+    .footer-bottom { border-top: 1px solid #222; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-bottom p { font-size: 12px; color: #444; }
+    .footer-plataforma { font-size: 11px; color: #444; display: flex; align-items: center; gap: 6px; }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,.3);
+      animation: modalIn .2s ease;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .modal-header {
+      padding: 24px 28px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .modal-title { font-size: 18px; font-weight: 800; color: #111; }
+    .modal-subtitle { font-size: 13px; color: #777; margin-top: 4px; }
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all .15s;
+      line-height: 1;
+    }
+    .modal-close:hover { background: #f0f0f0; color: #333; }
+
+    /* Plan summary bar */
+    .modal-plan-bar {
+      margin: 16px 28px 0;
+      background: #f8fdf4;
+      border: 1.5px solid #d4edcc;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-plan-name { font-size: 13px; font-weight: 700; color: #2a8a00; }
+    .modal-plan-price { font-size: 18px; font-weight: 900; color: #111; }
+    .modal-plan-price span { font-size: 12px; font-weight: 400; color: #999; }
+
+    /* Steps indicator */
+    .modal-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 20px 28px 0;
+    }
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e8e8e8;
+      color: #999;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s;
+    }
+    .step-dot.active { background: var(--green); color: #fff; }
+    .step-dot.done { background: var(--green); color: #fff; }
+    .step-line { flex: 1; height: 2px; background: #e8e8e8; transition: background .2s; }
+    .step-line.done { background: var(--green); }
+    .step-label { font-size: 10px; color: #aaa; margin-top: 4px; text-align: center; white-space: nowrap; }
+
+    .modal-body { padding: 24px 28px 28px; }
+
+    /* Form */
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #555; }
+    .form-group input, .form-group select {
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #222;
+      background: #fff;
+      transition: border-color .2s;
+      width: 100%;
+    }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--green); }
+    .form-group input.error { border-color: #ef4444; }
+    .form-hint { font-size: 11px; color: #999; }
+    .form-error { font-size: 11px; color: #ef4444; display: none; }
+    .form-group.has-error .form-error { display: block; }
+    .form-group.has-error input { border-color: #ef4444; }
+
+    /* Password strength */
+    .pwd-strength { margin-top: 4px; }
+    .pwd-bar { height: 4px; border-radius: 2px; background: #e8e8e8; overflow: hidden; }
+    .pwd-fill { height: 100%; border-radius: 2px; transition: width .3s, background .3s; width: 0; }
+    .pwd-text { font-size: 11px; color: #aaa; margin-top: 4px; }
+
+    /* CEP auto-fill status */
+    .cep-status { font-size: 11px; margin-top: 4px; }
+    .cep-status.loading { color: #3b82f6; }
+    .cep-status.ok { color: var(--green); }
+    .cep-status.err { color: #ef4444; }
+
+    /* Submit button */
+    .btn-primary {
+      width: 100%;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      letter-spacing: .3px;
+      margin-top: 8px;
+    }
+    .btn-primary:hover { background: var(--green-dark); }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-secondary {
+      background: none;
+      border: 1.5px solid #e0e0e0;
+      color: #555;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      width: 100%;
+      margin-top: 8px;
+      font-family: inherit;
+    }
+    .btn-secondary:hover { border-color: #999; color: #222; }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+
+    /* Loading state */
+    .modal-loading {
+      display: none;
+      text-align: center;
+      padding: 48px 28px;
+    }
+    .modal-loading.active { display: block; }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e8e8e8;
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title { font-size: 18px; font-weight: 700; color: #222; margin-bottom: 8px; }
+    .loading-sub { font-size: 14px; color: #777; }
+
+    /* Success state */
+    .modal-success {
+      display: none;
+      text-align: center;
+      padding: 40px 28px;
+    }
+    .modal-success.active { display: block; }
+    .success-icon { font-size: 56px; margin-bottom: 16px; }
+    .success-title { font-size: 22px; font-weight: 800; color: #111; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 28px; }
+
+    .payment-box {
+      background: #f8fdf4;
+      border: 2px solid #d4edcc;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .payment-box h4 { font-size: 13px; font-weight: 700; color: #2a8a00; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .payment-link {
+      display: block;
+      background: var(--green);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: background .2s;
+    }
+    .payment-link:hover { background: var(--green-dark); }
+    .payment-link-alt {
+      display: block;
+      margin-top: 10px;
+      color: #3b82f6;
+      font-size: 13px;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    /* Error state */
+    .modal-error-state {
+      display: none;
+      text-align: center;
+      padding: 40px 28px;
+    }
+    .modal-error-state.active { display: block; }
+    .error-icon { font-size: 52px; margin-bottom: 16px; }
+    .error-title { font-size: 20px; font-weight: 800; color: #dc2626; margin-bottom: 8px; }
+    .error-msg { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 28px; background: #fef2f2; border-radius: 10px; padding: 14px; border: 1px solid #fecaca; }
+
+    /* Password toggle */
+    .pwd-wrapper { position: relative; }
+    .pwd-wrapper input { padding-right: 40px; }
+    .pwd-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #aaa;
+      padding: 2px;
+    }
+    .pwd-toggle:hover { color: #555; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      header { padding: 0 24px; }
+      .hero { padding: 40px 24px; flex-direction: column; }
+      .hero-plan-box { min-width: unset; width: 100%; }
+      .plans-grid { grid-template-columns: 1fr; }
+      .products { padding: 48px 24px; }
+      .hub-ia-section { padding: 48px 24px; }
+      .hub-features { grid-template-columns: 1fr 1fr; }
+      footer { padding: 40px 24px 20px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .plans-grid { grid-template-columns: 1fr; }
+      .hub-features { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-row.three { grid-template-columns: 1fr; }
+      .btn-row { grid-template-columns: 1fr; }
+    }
+
+    /* CPF/Phone mask helper */
+    input[type="tel"] { letter-spacing: .3px; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-name">kem</span>
+        <span class="logo-label">telecom</span>
+      </div>
+      <nav>
+        <a href="#" class="active">Home</a>
+        <a href="#">2ª Via Boleto</a>
+        <a href="#">Fale Conosco</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Inteligência<br>Artificial inclusa<br>no seu plano!</h1>
+      <p>O Hub de IA chegou à Kem Telecom. Ferramentas de IA premium, streaming e muito mais — tudo junto na sua fibra.</p>
+      <div class="hero-sva-note">
+        Disponível em todos os planos: <strong>Hub de IA</strong>, <strong>WATCH</strong> e <strong>AWDIO</strong>
+      </div>
+    </div>
+
+    <div class="hero-plan-box">
+      <div class="hero-speed">
+        <span class="num">500</span>
+        <span class="unit">MEGA</span>
+      </div>
+      <div class="hero-plus">+</div>
+      <div class="hero-badges">
+        <span class="sva-logo sva-hub-ia">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#c4b5fd"/></svg>
+          <span class="hub-ia-text">HUB IA</span>
+        </span>
+        <span class="sva-logo sva-max">
+          <svg width="46" height="22" viewBox="0 0 46 22"><text x="2" y="17" font-family="Georgia,serif" font-size="18" font-weight="700" fill="white" letter-spacing="-0.5">máx</text></svg>
+        </span>
+        <span class="sva-logo sva-watch">
+          <svg class="watch-crown" width="32" height="10" viewBox="0 0 32 10"><polyline points="2,10 8,2 16,8 24,2 30,10" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+          <span class="watch-text">WATCH</span>
+        </span>
+      </div>
+      <div class="hero-price-box">
+        <span class="from">a partir de</span>
+        <span class="price">R$89,90</span>
+        <span class="per">/mês</span>
+      </div>
+      <div style="font-size:11px; color:rgba(255,255,255,.5); margin-top:8px; text-align:right;">BOLETO ANTES DO VENCIMENTO</div>
+    </div>
+  </section>
+
+  <!-- ─── PRODUCTS ─── -->
+  <section class="products">
+    <h2>Produtos e Serviços</h2>
+
+    <div class="plans-grid">
+
+      <!-- Combo Smart 500MB — MAIS VENDIDO -->
+      <div class="plan-card featured">
+        <div class="plan-label">Internet Fibra</div>
+        <div class="plan-speed-block">
+          <div class="num">500</div>
+          <div class="unit">MEGA</div>
+        </div>
+        <div class="plan-name">Combo Smart</div>
+        <div class="plan-badges">
+          <span class="sva-logo sva-hub-ia"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#c4b5fd"/></svg><span class="hub-ia-text">HUB IA</span></span>
+          <span class="sva-logo sva-watch"><svg class="watch-crown" width="30" height="9" viewBox="0 0 30 9"><polyline points="2,9 7,2 15,7 23,2 28,9" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg><span class="watch-text">WATCH</span></span>
+          <span class="sva-logo sva-awdio"><svg width="16" height="14" viewBox="0 0 16 14"><path d="M2 12 L6 2 L8 8 L10 4 L14 12" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><span class="awdio-text">AWDIO</span></span>
+        </div>
+        <hr class="plan-divider">
+        <div class="plan-price-val"><sup>R$</sup>99<span>,90/mês</span></div>
+        <div class="plan-note">boleto antes do vencimento</div>
+        <button class="plan-cta" onclick="openCheckout('500mb-smart')">Assinar agora</button>
+      </div>
+
+      <!-- Combo Ultra 500MB com MAX -->
+      <div class="plan-card">
+        <div class="plan-label">Internet Fibra</div>
+        <div class="plan-speed-block">
+          <div class="num">500</div>
+          <div class="unit">MEGA</div>
+        </div>
+        <div class="plan-name">Combo Ultra</div>
+        <div class="plan-badges">
+          <span class="sva-logo sva-hub-ia"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#c4b5fd"/></svg><span class="hub-ia-text">HUB IA</span></span>
+          <span class="sva-logo sva-max"><svg width="46" height="22" viewBox="0 0 46 22"><text x="2" y="17" font-family="Georgia,serif" font-size="18" font-weight="700" fill="white" letter-spacing="-0.5">máx</text></svg></span>
+          <span class="sva-logo sva-watch"><svg class="watch-crown" width="30" height="9" viewBox="0 0 30 9"><polyline points="2,9 7,2 15,7 23,2 28,9" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg><span class="watch-text">WATCH</span></span>
+          <span class="sva-logo sva-awdio"><svg width="16" height="14" viewBox="0 0 16 14"><path d="M2 12 L6 2 L8 8 L10 4 L14 12" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><span class="awdio-text">AWDIO</span></span>
+        </div>
+        <hr class="plan-divider">
+        <div class="plan-price-val"><sup>R$</sup>119<span>,90/mês</span></div>
+        <div class="plan-note">boleto antes do vencimento</div>
+        <button class="plan-cta" onclick="openCheckout('500mb-ultra')">Assinar agora</button>
+      </div>
+
+      <!-- Combo Ultra 800MB com MAX -->
+      <div class="plan-card">
+        <div class="plan-label">Internet Fibra</div>
+        <div class="plan-speed-block">
+          <div class="num">800</div>
+          <div class="unit">MEGA</div>
+        </div>
+        <div class="plan-name">Combo Ultra</div>
+        <div class="plan-badges">
+          <span class="sva-logo sva-hub-ia"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#c4b5fd"/></svg><span class="hub-ia-text">HUB IA</span></span>
+          <span class="sva-logo sva-max"><svg width="46" height="22" viewBox="0 0 46 22"><text x="2" y="17" font-family="Georgia,serif" font-size="18" font-weight="700" fill="white" letter-spacing="-0.5">máx</text></svg></span>
+          <span class="sva-logo sva-watch"><svg class="watch-crown" width="30" height="9" viewBox="0 0 30 9"><polyline points="2,9 7,2 15,7 23,2 28,9" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg><span class="watch-text">WATCH</span></span>
+          <span class="sva-logo sva-awdio"><svg width="16" height="14" viewBox="0 0 16 14"><path d="M2 12 L6 2 L8 8 L10 4 L14 12" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><span class="awdio-text">AWDIO</span></span>
+        </div>
+        <hr class="plan-divider">
+        <div class="plan-price-val"><sup>R$</sup>149<span>,90/mês</span></div>
+        <div class="plan-note">boleto antes do vencimento</div>
+        <button class="plan-cta" onclick="openCheckout('800mb-ultra')">Assinar agora</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── HUB IA FEATURE SECTION ─── -->
+  <section class="hub-ia-section">
+    <div class="hub-ia-badge-hero">
+      <span class="spark">⚡</span> NOVO SVA EXCLUSIVO KEM TELECOM
+    </div>
+    <h2>Conheça o Hub de IA</h2>
+    <p>
+      Incluso em todos os planos de fibra, o Hub de IA é a sua plataforma de Inteligência Artificial com ferramentas para criar, automatizar e produzir mais — tudo integrado à velocidade da Kem Telecom.
+    </p>
+
+    <div class="hub-features">
+      <div class="hub-feature">
+        <div class="hub-feature-icon">🤖</div>
+        <h3>Chat Inteligente</h3>
+        <p>Assistente de IA disponível 24h para responder dúvidas, criar textos, resumos e ajudar em qualquer tarefa do dia a dia.</p>
+      </div>
+      <div class="hub-feature">
+        <div class="hub-feature-icon">🎨</div>
+        <h3>Criação de Imagens</h3>
+        <p>Gere imagens profissionais para redes sociais, marketing e projetos com IA generativa de última geração.</p>
+      </div>
+      <div class="hub-feature">
+        <div class="hub-feature-icon">⚡</div>
+        <h3>Automações</h3>
+        <p>Automatize tarefas repetitivas, crie fluxos e economize horas de trabalho toda semana sem precisar de código.</p>
+      </div>
+      <div class="hub-feature">
+        <div class="hub-feature-icon">📊</div>
+        <h3>Análise de Dados</h3>
+        <p>Envie planilhas, PDFs e documentos — a IA analisa, resume e responde perguntas sobre os seus dados instantaneamente.</p>
+      </div>
+      <div class="hub-feature">
+        <div class="hub-feature-icon">✍️</div>
+        <h3>Criação de Conteúdo</h3>
+        <p>Posts para redes sociais, roteiros de vídeo, e-mails e campanhas — crie conteúdo profissional em segundos.</p>
+      </div>
+      <div class="hub-feature">
+        <div class="hub-feature-icon">🔒</div>
+        <h3>Seguro e Privado</h3>
+        <p>Seus dados ficam protegidos. O Hub de IA segue as diretrizes da LGPD e garante a privacidade das suas informações.</p>
+      </div>
+    </div>
+
+    <div class="hub-cta-row">
+      <a href="https://app.kemsolucoes.com.br" target="_blank">Acessar o Hub de IA</a>
+      <span>Já incluso no seu plano Kem Telecom</span>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Institucional</h4>
+        <a href="#">2ª Via Boleto</a>
+        <a href="#">Fale Conosco</a>
+        <a href="#">Instagram</a>
+      </div>
+      <div class="footer-col">
+        <h4>Sua Conta</h4>
+        <a href="https://app.kemsolucoes.com.br" target="_blank">Acessar Hub de IA</a>
+        <div class="sub-section">
+          <h4>Precisa de Ajuda?</h4>
+          <a href="#">Política de privacidade</a>
+          <a href="#">Termos de uso</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Atendimento</h4>
+        <p>Segunda a Domingo das 08h às 20h.</p>
+        <p style="margin-top:10px;">contato@kemtelecom.com.br</p>
+        <p style="margin-top:6px;">WhatsApp 61 99402-0204</p>
+      </div>
+      <div class="footer-col">
+        <h4>Formas de Pagamento</h4>
+        <div class="payment-grid">
+          <span class="payment-chip">BOLETO</span>
+          <span class="payment-chip">PIX</span>
+          <span class="payment-chip">CARTÃO</span>
+        </div>
+        <h4>Segurança</h4>
+        <div class="secure-badge">
+          🔒 Site Seguro — Pagamento via Asaas
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Todos os direitos reservados à Kem Soluções — 2026</p>
+      <div class="footer-plataforma">
+        <span>Plataforma</span><strong style="color:#555;">KemOS</strong>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── CHECKOUT MODAL ─── -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal" id="modal">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Assinar plano</div>
+          <div class="modal-subtitle">Preencha os dados para concluir a assinatura</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Fechar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Plan bar -->
+      <div class="modal-plan-bar">
+        <div class="modal-plan-name" id="modalPlanName">—</div>
+        <div class="modal-plan-price"><span>R$</span><span id="modalPlanPrice">—</span><span>/mês</span></div>
+      </div>
+
+      <!-- Steps -->
+      <div class="modal-steps">
+        <div class="step-dot active" id="stepDot1">1</div>
+        <div class="step-line" id="stepLine1"></div>
+        <div class="step-dot" id="stepDot2">2</div>
+        <div class="step-line" id="stepLine2"></div>
+        <div class="step-dot" id="stepDot3">3</div>
+      </div>
+      <div style="display:flex; padding: 4px 28px 0; gap: 0;">
+        <div style="flex:0 0 28px; font-size:10px; color:#aaa; text-align:center;">Dados</div>
+        <div style="flex:1;"></div>
+        <div style="flex:0 0 28px; font-size:10px; color:#aaa; text-align:center;">Endereço</div>
+        <div style="flex:1;"></div>
+        <div style="flex:0 0 28px; font-size:10px; color:#aaa; text-align:center;">Senha</div>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Step 1: Dados pessoais -->
+        <div class="form-step active" id="formStep1">
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="nome">Nome completo *</label>
+              <input type="text" id="nome" name="nome" placeholder="Seu nome completo" autocomplete="name">
+              <span class="form-error">Informe o nome completo</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="email">E-mail *</label>
+              <input type="email" id="email" name="email" placeholder="seu@email.com" autocomplete="email">
+              <span class="form-error">Informe um e-mail válido</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cpf">CPF *</label>
+              <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14">
+              <span class="form-error">Informe um CPF válido</span>
+            </div>
+            <div class="form-group">
+              <label for="telefone">Telefone / WhatsApp *</label>
+              <input type="tel" id="telefone" name="telefone" placeholder="(61) 99999-9999" maxlength="15">
+              <span class="form-error">Informe um telefone válido</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="dataNasc">Data de nascimento *</label>
+              <input type="text" id="dataNasc" name="dataNasc" placeholder="DD/MM/AAAA" maxlength="10">
+              <span class="form-error">Informe a data de nascimento</span>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="goStep2()">Continuar →</button>
+        </div>
+
+        <!-- Step 2: Endereço -->
+        <div class="form-step" id="formStep2">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cep">CEP *</label>
+              <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9">
+              <div class="cep-status" id="cepStatus"></div>
+              <span class="form-error">Informe o CEP</span>
+            </div>
+            <div class="form-group">
+              <label for="numero">Número *</label>
+              <input type="text" id="numero" name="numero" placeholder="Ex: 42">
+              <span class="form-error">Informe o número</span>
+            </div>
+          </div>
+          <div class="form-row single">
+            <div class="form-group">
+              <label for="logradouro">Logradouro *</label>
+              <input type="text" id="logradouro" name="logradouro" placeholder="Rua, Av, etc.">
+              <span class="form-error">Informe o logradouro</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bairro">Bairro *</label>
+              <input type="text" id="bairro" name="bairro" placeholder="Bairro">
+              <span class="form-error">Informe o bairro</span>
+            </div>
+            <div class="form-group">
+              <label for="complemento">Complemento</label>
+              <input type="text" id="complemento" name="complemento" placeholder="Apto, bloco, etc." maxlength="80">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cidade">Cidade *</label>
+              <input type="text" id="cidade" name="cidade" placeholder="Cidade">
+              <span class="form-error">Informe a cidade</span>
+            </div>
+            <div class="form-group">
+              <label for="uf">UF *</label>
+              <input type="text" id="uf" name="uf" placeholder="DF" maxlength="2" style="text-transform:uppercase;">
+              <span class="form-error">Informe o estado</span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="goStep1()">← Voltar</button>
+            <button class="btn-primary" onclick="goStep3()">Continuar →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Senha -->
+        <div class="form-step" id="formStep3">
+          <p style="font-size:13px; color:#666; margin-bottom:20px; line-height:1.6;">
+            Crie uma senha para acessar o <strong>Hub de IA</strong> em <strong>app.kemsolucoes.com.br</strong>.<br>
+            Você receberá um e-mail de confirmação com as instruções de acesso após o pagamento.
+          </p>
+
+          <div class="form-group">
+            <label for="senha">Senha *</label>
+            <div class="pwd-wrapper">
+              <input type="password" id="senha" name="senha" placeholder="Mínimo 12 caracteres">
+              <button class="pwd-toggle" type="button" onclick="togglePwd('senha', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="pwd-strength">
+              <div class="pwd-bar"><div class="pwd-fill" id="pwdFill"></div></div>
+              <div class="pwd-text" id="pwdText">—</div>
+            </div>
+            <span class="form-error">Mínimo 12 caracteres com maiúsculas, minúsculas e números</span>
+          </div>
+
+          <div class="form-group">
+            <div class="form-hint" style="margin-bottom:12px; margin-top:-8px; font-size:11px; color:#888;">Mínimo 12 caracteres com letras maiúsculas, minúsculas e números.</div>
+          <label for="senhaConf">Confirmar senha *</label>
+            <div class="pwd-wrapper">
+              <input type="password" id="senhaConf" name="senhaConf" placeholder="Repita a senha">
+              <button class="pwd-toggle" type="button" onclick="togglePwd('senhaConf', this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <span class="form-error">As senhas não coincidem</span>
+          </div>
+
+          <p style="font-size:11px; color:#aaa; margin-bottom:16px; line-height:1.5;">
+            Ao assinar, você concorda com os <a href="#" style="color:var(--green);">Termos de uso</a> e a <a href="#" style="color:var(--green);">Política de privacidade</a> da Kem Telecom.
+          </p>
+
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="goStep2()">← Voltar</button>
+            <button class="btn-primary" onclick="submitCheckout()" id="btnSubmit">Finalizar assinatura</button>
+          </div>
+        </div>
+
+      </div><!-- /.modal-body -->
+
+      <!-- Loading state -->
+      <div class="modal-loading" id="modalLoading">
+        <div class="spinner"></div>
+        <div class="loading-title">Processando sua assinatura…</div>
+        <div class="loading-sub">Aguarde, estamos configurando tudo para você.</div>
+      </div>
+
+      <!-- Success state -->
+      <div class="modal-success" id="modalSuccess">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">Assinatura realizada!</div>
+        <div class="success-sub">
+          Sua conta foi criada. Pague o boleto abaixo para ativar seus serviços — o acesso ao Hub de IA é liberado automaticamente após a confirmação do pagamento.
+        </div>
+        <div class="payment-box">
+          <h4>💰 Pagamento</h4>
+          <a href="#" class="payment-link" id="boletoLink" target="_blank">Pagar boleto / Visualizar fatura</a>
+          <div id="pixSection" style="display:none; margin-top:14px;">
+            <p style="font-size:12px; color:#555; margin-bottom:8px;">ou pague via Pix:</p>
+            <img id="pixQr" src="" alt="QR Code Pix" style="max-width:160px; border-radius:8px; display:block; margin:0 auto;">
+            <p id="pixCopiaECola" style="font-size:11px; color:#777; margin-top:8px; word-break:break-all;"></p>
+          </div>
+        </div>
+        <p style="font-size:12px; color:#aaa;">Dúvidas? WhatsApp: (61) 99402-0204</p>
+        <button class="btn-secondary" onclick="closeModal()" style="margin-top:16px;">Fechar</button>
+      </div>
+
+      <!-- Error state -->
+      <div class="modal-error-state" id="modalErrorState">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Ops, algo deu errado</div>
+        <div class="error-msg" id="errorMsg">Ocorreu um erro inesperado.</div>
+        <button class="btn-primary" onclick="resetToForm()">Tentar novamente</button>
+        <button class="btn-secondary" onclick="closeModal()" style="margin-top:10px;">Fechar</button>
+      </div>
+
+    </div><!-- /.modal -->
+  </div><!-- /.modal-overlay -->
+
+  <script>
+    // ─── CONFIG ───────────────────────────────────────────────────
+    // URL do webhook n8n
+    const N8N_WEBHOOK_URL = 'https://automacoes.kemsolucoes.com.br/webhook/kem-telecom-checkout';
+
+    // Mapa de planos
+    // TODO: substituir '350MB-STARTER-PRODUCT-ID' pelo UUID real do produto no grupo-il
+    const PLANS = {
+      '500mb-smart': {
+        productId: '1300061d-69c4-412b-a31f-bf30cd6dc36d',
+        name: 'Combo Smart 500MB',
+        priceLabel: '99,90',
+        price: 99.90,
+        planName: 'hub-ia-solo',
+      },
+      '500mb-ultra': {
+        productId: '0942dcb4-3df4-4c47-8ed1-bf6f51514fc4',
+        name: 'Combo Ultra 500MB',
+        priceLabel: '119,90',
+        price: 119.90,
+        planName: 'hub-ia-solo',
+      },
+      '800mb-ultra': {
+        productId: '1d80c73b-9548-42be-913d-c9274ea12bac',
+        name: 'Combo Ultra 800MB',
+        priceLabel: '149,90',
+        price: 149.90,
+        planName: 'hub-ia-solo',
+      },
+    };
+    // ─── /CONFIG ──────────────────────────────────────────────────
+
+    let currentPlanId = null;
+    let currentStep = 1;
+
+    // ─── Modal open/close ─────────────────────────────────────────
+    function openCheckout(planId) {
+      currentPlanId = planId;
+      const plan = PLANS[planId];
+      if (!plan) return;
+
+      document.getElementById('modalPlanName').textContent = plan.name;
+      document.getElementById('modalPlanPrice').textContent = plan.priceLabel;
+
+      resetToForm();
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    // Fechar com ESC
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // ─── Steps ────────────────────────────────────────────────────
+    function showStep(n) {
+      currentStep = n;
+      [1,2,3].forEach(i => {
+        document.getElementById(`formStep${i}`).classList.toggle('active', i === n);
+        const dot = document.getElementById(`stepDot${i}`);
+        dot.classList.toggle('active', i === n);
+        dot.classList.toggle('done', i < n);
+        dot.textContent = i < n ? '✓' : i;
+      });
+      [1,2].forEach(i => {
+        document.getElementById(`stepLine${i}`).classList.toggle('done', i < n);
+      });
+      document.getElementById('modal').scrollTop = 0;
+    }
+
+    function goStep2() {
+      if (!validateStep1()) return;
+      showStep(2);
+    }
+
+    function goStep3() {
+      if (!validateStep2()) return;
+      showStep(3);
+    }
+
+    function goStep1() { showStep(1); }
+
+    // ─── Validation ───────────────────────────────────────────────
+    function setError(id, hasError) {
+      const g = document.getElementById(id).closest('.form-group');
+      if (hasError) g.classList.add('has-error');
+      else g.classList.remove('has-error');
+      return !hasError;
+    }
+
+    function validateStep1() {
+      let ok = true;
+      const nome = document.getElementById('nome').value.trim();
+      ok = setError('nome', nome.length < 3) && ok;
+
+      const email = document.getElementById('email').value.trim();
+      ok = setError('email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) && ok;
+
+      const cpf = document.getElementById('cpf').value.replace(/\D/g,'');
+      ok = setError('cpf', !validateCPF(cpf)) && ok;
+
+      const tel = document.getElementById('telefone').value.replace(/\D/g,'');
+      ok = setError('telefone', tel.length < 10) && ok;
+
+      const nasc = document.getElementById('dataNasc').value.trim();
+      ok = setError('dataNasc', !validateDate(nasc)) && ok;
+
+      return ok;
+    }
+
+    function validateStep2() {
+      let ok = true;
+      ok = setError('cep', document.getElementById('cep').value.replace(/\D/g,'').length !== 8) && ok;
+      ok = setError('numero', !document.getElementById('numero').value.trim()) && ok;
+      ok = setError('logradouro', !document.getElementById('logradouro').value.trim()) && ok;
+      ok = setError('bairro', !document.getElementById('bairro').value.trim()) && ok;
+      ok = setError('cidade', !document.getElementById('cidade').value.trim()) && ok;
+      ok = setError('uf', document.getElementById('uf').value.trim().length !== 2) && ok;
+      return ok;
+    }
+
+    function validateStep3() {
+      let ok = true;
+      const senha = document.getElementById('senha').value;
+      const pwdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/;
+      ok = setError('senha', !pwdRegex.test(senha)) && ok;
+      const conf = document.getElementById('senhaConf').value;
+      ok = setError('senhaConf', conf !== senha) && ok;
+      return ok;
+    }
+
+    // CPF check (dígitos verificadores)
+    function validateCPF(cpf) {
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+      let sum = 0;
+      for (let i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+      let r = (sum * 10) % 11;
+      if (r === 10 || r === 11) r = 0;
+      if (r !== parseInt(cpf[9])) return false;
+      sum = 0;
+      for (let i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+      r = (sum * 10) % 11;
+      if (r === 10 || r === 11) r = 0;
+      return r === parseInt(cpf[10]);
+    }
+
+    function validateDate(s) {
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return false;
+      const [d,m,y] = s.split('/').map(Number);
+      if (m < 1 || m > 12 || d < 1 || d > 31) return false;
+      const date = new Date(y, m-1, d);
+      return date.getFullYear() === y && date.getMonth() === m-1 && date.getDate() === d && y >= 1920 && y <= 2010;
+    }
+
+    // ─── Masks ────────────────────────────────────────────────────
+    document.getElementById('cpf').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,11);
+      if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/,'$1.$2.$3-$4');
+      else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{0,3})/,'$1.$2.$3');
+      else if (v.length > 3) v = v.replace(/(\d{3})(\d{0,3})/,'$1.$2');
+      this.value = v;
+    });
+
+    document.getElementById('telefone').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,11);
+      if (v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+      else if (v.length > 6) v = v.replace(/(\d{2})(\d{4,5})(\d{0,4})/,'($1) $2-$3');
+      else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+      this.value = v;
+    });
+
+    document.getElementById('cep').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,8);
+      if (v.length > 5) v = v.replace(/(\d{5})(\d{0,3})/,'$1-$2');
+      this.value = v;
+      if (v.replace(/\D/g,'').length === 8) fetchCep(v.replace(/\D/g,''));
+    });
+
+    document.getElementById('dataNasc').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,8);
+      if (v.length > 4) v = v.replace(/(\d{2})(\d{2})(\d{0,4})/,'$1/$2/$3');
+      else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,2})/,'$1/$2');
+      this.value = v;
+    });
+
+    document.getElementById('uf').addEventListener('input', function() {
+      this.value = this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,2);
+    });
+
+    // ─── CEP lookup ───────────────────────────────────────────────
+    async function fetchCep(cep) {
+      const status = document.getElementById('cepStatus');
+      status.className = 'cep-status loading';
+      status.textContent = 'Buscando CEP…';
+      try {
+        const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const d = await r.json();
+        if (d.erro) {
+          status.className = 'cep-status err';
+          status.textContent = 'CEP não encontrado';
+          return;
+        }
+        document.getElementById('logradouro').value = d.logradouro || '';
+        document.getElementById('bairro').value = d.bairro || '';
+        document.getElementById('cidade').value = d.localidade || '';
+        document.getElementById('uf').value = d.uf || '';
+        status.className = 'cep-status ok';
+        status.textContent = '✓ Endereço preenchido automaticamente';
+        document.getElementById('numero').focus();
+      } catch {
+        status.className = 'cep-status err';
+        status.textContent = 'Erro ao buscar CEP';
+      }
+    }
+
+    // ─── Password strength ────────────────────────────────────────
+    document.getElementById('senha').addEventListener('input', function() {
+      const v = this.value;
+      let score = 0;
+      if (v.length >= 8) score++;
+      if (v.length >= 12) score++;
+      if (/[A-Z]/.test(v)) score++;
+      if (/[0-9]/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+
+      const fill = document.getElementById('pwdFill');
+      const text = document.getElementById('pwdText');
+      const levels = ['', 'Muito fraca', 'Fraca', 'Regular', 'Forte', 'Muito forte'];
+      const colors = ['', '#ef4444', '#f97316', '#eab308', '#22c55e', '#16a34a'];
+      const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
+      fill.style.width = widths[score] || '0%';
+      fill.style.background = colors[score] || '';
+      text.textContent = levels[score] || '—';
+    });
+
+    // ─── Password toggle ──────────────────────────────────────────
+    function togglePwd(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      const isText = inp.type === 'text';
+      inp.type = isText ? 'password' : 'text';
+      btn.innerHTML = isText
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    }
+
+    // ─── Submit ───────────────────────────────────────────────────
+    async function submitCheckout() {
+      if (!validateStep3()) return;
+
+      const plan = PLANS[currentPlanId];
+      if (!plan) return;
+
+      // Collect all data
+      const payload = {
+        // Plano
+        planId: plan.productId,
+        amount: plan.price,
+        productName: plan.name,
+        type: 'internet',
+
+        // Dados pessoais
+        name: document.getElementById('nome').value.trim(),
+        email: document.getElementById('email').value.trim().toLowerCase(),
+        phone: document.getElementById('telefone').value.replace(/\D/g,''),
+        cpf: document.getElementById('cpf').value.replace(/\D/g,''),
+        birthDate: formatDateForApi(document.getElementById('dataNasc').value),
+
+        // Endereço
+        cep: document.getElementById('cep').value.replace(/\D/g,''),
+        address: document.getElementById('logradouro').value.trim(),
+        addressNumber: document.getElementById('numero').value.trim(),
+        district: document.getElementById('bairro').value.trim(),
+        city: document.getElementById('cidade').value.trim(),
+        state: document.getElementById('uf').value.trim().toUpperCase(),
+        complement: document.getElementById('complemento').value.trim() || null,
+
+        // Senha Hub IA
+        password: document.getElementById('senha').value,
+
+        // Metadados
+        source: 'kem-telecom-site',
+        kemosProvisioning: true,
+      };
+
+      // Show loading
+      showModalState('loading');
+
+      try {
+        const resp = await fetch(N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await resp.json();
+
+        if (data.success === false || data.error) {
+          const msg = typeof data.error === 'string' ? data.error : (data.message || 'Erro ao processar assinatura.');
+          showError(friendlyError(msg));
+          return;
+        }
+
+        // Success — show payment link
+        showSuccess(data);
+
+      } catch (err) {
+        showError('Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.');
+      }
+    }
+
+    function formatDateForApi(s) {
+      // DD/MM/YYYY → YYYY-MM-DD
+      if (!s) return null;
+      const [d,m,y] = s.split('/');
+      return `${y}-${m}-${d}`;
+    }
+
+    function friendlyError(msg) {
+      if (!msg) return 'Erro ao processar assinatura. Tente novamente ou entre em contato com o suporte.';
+      if (msg.includes('já está vinculado')) return msg;
+      if (msg.includes('EMAIL_ALREADY_EXISTS') || msg.includes('already been registered')) return 'Este e-mail já está cadastrado. Acesse app.kemsolucoes.com.br para entrar na sua conta.';
+      if (msg.includes('senha deve ter')) return msg;
+      if (msg.includes('CAPTCHA')) return 'Falha na validação de segurança. Tente recarregar a página.';
+      return msg;
+    }
+
+    function showSuccess(data) {
+      // invoiceUrl fica em sgpResult.asaas.invoiceUrl (retorno do process-checkout)
+      const url = data.sgpResult?.asaas?.invoiceUrl
+        || data.invoiceUrl || data.paymentUrl || data.bankSlipUrl || '#';
+      const link = document.getElementById('boletoLink');
+      link.href = url;
+      link.textContent = url === '#' ? 'Fatura em processamento — aguarde e-mail' : 'Pagar boleto / Visualizar fatura';
+
+      // PIX se disponível
+      if (data.pixQrCodeUrl || data.pixCopiaECola) {
+        document.getElementById('pixSection').style.display = 'block';
+        if (data.pixQrCodeUrl) {
+          document.getElementById('pixQr').src = data.pixQrCodeUrl;
+          document.getElementById('pixQr').style.display = 'block';
+        }
+        if (data.pixCopiaECola) {
+          document.getElementById('pixCopiaECola').textContent = data.pixCopiaECola;
+        }
+      }
+
+      showModalState('success');
+    }
+
+    function showError(msg) {
+      document.getElementById('errorMsg').textContent = msg;
+      showModalState('error');
+    }
+
+    function showModalState(state) {
+      document.getElementById('modal').querySelector('.modal-header').style.display = state === 'form' ? '' : 'none';
+      document.getElementById('modal').querySelector('.modal-plan-bar').style.display = state === 'form' ? '' : 'none';
+      document.getElementById('modal').querySelector('.modal-steps').style.display = state === 'form' ? '' : 'none';
+      document.getElementById('modal').querySelectorAll('[style*="display:flex"]').forEach(el => {
+        if (el.id !== 'pixSection') el.style.display = state === 'form' ? 'flex' : 'none';
+      });
+      document.getElementById('modal').querySelector('.modal-body').style.display = state === 'form' ? '' : 'none';
+      document.getElementById('modalLoading').classList.toggle('active', state === 'loading');
+      document.getElementById('modalSuccess').classList.toggle('active', state === 'success');
+      document.getElementById('modalErrorState').classList.toggle('active', state === 'error');
+    }
+
+    function resetToForm() {
+      // Reset all steps
+      showStep(1);
+
+      // Clear all inputs
+      ['nome','email','cpf','telefone','dataNasc','cep','logradouro','numero','bairro','complemento','cidade','uf','senha','senhaConf'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+
+      // Clear errors
+      document.querySelectorAll('.form-group.has-error').forEach(g => g.classList.remove('has-error'));
+      document.getElementById('cepStatus').textContent = '';
+      document.getElementById('pwdFill').style.width = '0%';
+      document.getElementById('pwdText').textContent = '—';
+      document.getElementById('pixSection').style.display = 'none';
+
+      // Show form
+      const header = document.getElementById('modal').querySelector('.modal-header');
+      const planBar = document.getElementById('modal').querySelector('.modal-plan-bar');
+      const stepsEl = document.getElementById('modal').querySelector('.modal-steps');
+      const body = document.getElementById('modal').querySelector('.modal-body');
+      const stepsLabel = stepsEl.nextElementSibling;
+
+      [header, planBar, stepsEl, stepsLabel, body].forEach(el => { if (el) el.style.display = ''; });
+      document.getElementById('modalLoading').classList.remove('active');
+      document.getElementById('modalSuccess').classList.remove('active');
+      document.getElementById('modalErrorState').classList.remove('active');
+    }
+  </script>
+
+</body>
+</html>
