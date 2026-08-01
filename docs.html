@@ -1037,6 +1037,16 @@
       </div>
     </div>
 
+    <!-- PLANOS -->
+    <div class="nav-section" id="sec-planos">
+      <div class="nav-section-label" onclick="toggleSection('sec-planos')">Planos do Revendedor</div>
+      <div class="nav-section-items">
+        <a class="nav-item" href="#planos-overview" onclick="setActive(this)">Visão Geral</a>
+        <a class="nav-item" href="#planos-criar" onclick="setActive(this)">Criando um Plano</a>
+        <a class="nav-item" href="#planos-provisionar" onclick="setActive(this)">Provisionando com Plano</a>
+      </div>
+    </div>
+
     <!-- WEBHOOKS -->
     <div class="nav-section" id="sec-wh">
       <div class="nav-section-label" onclick="toggleSection('sec-wh')">Webhooks</div>
@@ -1292,7 +1302,7 @@ curl "$BASE/provisioning/sub-tenants" \
           <div class="endpoint-url">/api/v1/provisioning/sub-tenants</div>
         </div>
 
-        <p class="section-desc">Cria um novo cliente e ativa o Hub de IA automaticamente. Se o e-mail já existir no sistema, retorna o sub-tenant existente sem criar duplicata.</p>
+        <p class="section-desc">Cria um novo cliente e ativa automaticamente os módulos do plano contratado. Se o e-mail já existir no sistema, retorna erro <code>EMAIL_ALREADY_EXISTS</code>.</p>
 
         <h2>Parâmetros do body</h2>
         <div class="table-wrap">
@@ -1333,8 +1343,16 @@ curl "$BASE/provisioning/sub-tenants" \
               <tr>
                 <td><span class="param-name">plan</span></td>
                 <td><span class="param-type">string</span></td>
-                <td><span class="req-badge req-yes">✅ Sim</span></td>
-                <td>Plano contratado. Ex: <code>"hub-ia-solo"</code></td>
+                <td><span class="req-badge req-no">Não</span></td>
+                <td>
+                  UUID de um <strong>plano do revendedor</strong> (criado em <code>/planos</code>) ou ID de plano global (<code>"hub-ia-solo"</code>, <code>"hub-ia-revendedor"</code>). Quando é um UUID de plano do revendedor, os módulos configurados naquele plano são ativados automaticamente. Padrão: <code>"hub-ia-solo"</code>.
+                  <br><br>
+                  <strong>Plano do revendedor (recomendado):</strong><br>
+                  <code style="font-size:11px">"plan": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"</code>
+                  <br><br>
+                  <strong>Plano global (legado):</strong><br>
+                  <code style="font-size:11px">"plan": "hub-ia-solo"</code>
+                </td>
               </tr>
               <tr>
                 <td><span class="param-name">password</span></td>
@@ -2163,6 +2181,300 @@ def validate_webhook(body: bytes, secret: str, sig: str) -> bool:
   }
 }</code></pre>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PLANOS — VISÃO GERAL
+    ══════════════════════════════════ -->
+    <div class="doc-section no-code" id="planos-overview">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Planos do Revendedor</div>
+          <h1 class="section-title">Visão Geral</h1>
+        </div>
+
+        <p class="section-desc">Planos do revendedor permitem que você defina quais módulos do KemOS serão liberados para cada tipo de cliente — sem depender de planos globais da Kem Soluções.</p>
+
+        <p>Em vez de fixar <code>"plan": "hub-ia-solo"</code> em todas as integrações, você cria planos personalizados no painel e usa o UUID de cada plano na Provisioning API. Isso permite:</p>
+
+        <ul style="margin: 0.75rem 0 0 1.25rem; display:flex; flex-direction:column; gap:0.5rem; color:var(--c-text-secondary, #8b949e); font-size:0.9rem; line-height:1.6;">
+          <li>Segmentar clientes por produto: <em>Internet 500MB + Hub IA</em>, <em>Plano Premium + Financeiro</em>, etc.</li>
+          <li>Controlar exatamente quais módulos cada plano ativa — somente módulos que você mesmo tem habilitado</li>
+          <li>Alterar módulos de um plano a qualquer momento sem mexer na integração</li>
+          <li>Rastrear qual plano originou cada sub-tenant (campo <code>reseller_plan_id</code> na subscription)</li>
+        </ul>
+
+        <div class="callout info" style="margin-top:1.25rem;">
+          <span class="callout-icon">💡</span>
+          <div>Planos do revendedor são criados e gerenciados na tela <strong>/planos</strong> do KemOS. O UUID do plano fica disponível para copiar diretamente na interface.</div>
+        </div>
+
+        <h2>Como funciona</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Etapa</th><th>Onde</th><th>O que acontece</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Criar plano</strong></td>
+                <td>KemOS → /planos</td>
+                <td>Você escolhe os módulos e o sistema gera um UUID único para o plano</td>
+              </tr>
+              <tr>
+                <td><strong>2. Copiar UUID</strong></td>
+                <td>Card do plano</td>
+                <td>Botão "Copiar" ao lado do Plan ID — use este UUID na sua integração</td>
+              </tr>
+              <tr>
+                <td><strong>3. Provisionar</strong></td>
+                <td>Provisioning API</td>
+                <td>Passe o UUID no campo <code>plan</code> — os módulos corretos são ativados automaticamente</td>
+              </tr>
+              <tr>
+                <td><strong>4. Gerenciar</strong></td>
+                <td>KemOS → /clientes</td>
+                <td>Veja todos os sub-tenants provisionados, status e plano utilizado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PLANOS — CRIAR
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="planos-criar">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Planos do Revendedor</div>
+          <h1 class="section-title">Criando um Plano</h1>
+        </div>
+
+        <p class="section-desc">Acesse <strong>KemOS → Configurações → Planos</strong> e clique em <em>"+ Novo plano"</em>. O modal exibe todos os módulos disponíveis para o seu tenant, agrupados por categoria.</p>
+
+        <h2>Campos do plano</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Campo</th><th>Obrigatório</th><th>Descrição</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">Nome</span></td>
+                <td><span class="req-badge req-yes">✅ Sim</span></td>
+                <td>Nome interno do plano. Ex: <em>"Internet 500MB + Hub IA"</em></td>
+              </tr>
+              <tr>
+                <td><span class="param-name">Descrição</span></td>
+                <td><span class="req-badge req-no">Não</span></td>
+                <td>Texto opcional para identificação interna</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">Módulos</span></td>
+                <td><span class="req-badge req-yes">✅ Sim</span></td>
+                <td>Selecione os módulos que serão liberados para clientes deste plano. Apenas módulos ativos no seu tenant aparecem como opção.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-icon">⚠</span>
+          <div>Você só pode incluir módulos que o seu próprio tenant tem habilitado. Se precisar revender um módulo que não aparece na lista, entre em contato com o suporte da Kem Soluções.</div>
+        </div>
+
+        <h2>Após criar</h2>
+        <p>O plano aparece como um card com o <strong>Plan ID</strong> (UUID) exibido e um botão <em>Copiar</em>. Use este UUID no campo <code>plan</code> da Provisioning API. Você pode editar os módulos do plano a qualquer momento — clientes já provisionados <strong>não</strong> são afetados retroativamente.</p>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">API — criar plano programaticamente</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">curl</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">curl -X POST \
+  https://app.kemsolucoes.com.br/api/tenant/plans \
+  -H "X-API-Key: sua-api-key-aqui" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Internet 500MB + Hub IA",
+    "description": "Plano combo com acesso ao Hub de IA",
+    "modules": ["hub-ia", "hub-ia-busca", "hub-ia-agentes"]
+  }'</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin:18px 0 8px;">Resposta 201</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": true,
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Internet 500MB + Hub IA",
+    "description": "Plano combo com acesso ao Hub de IA",
+    "modules": ["hub-ia", "hub-ia-busca", "hub-ia-agentes"],
+    "status": "active",
+    "created_at": "2026-08-01T00:00:00Z"
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PLANOS — PROVISIONAR
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="planos-provisionar">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Planos do Revendedor</div>
+          <h1 class="section-title">Provisionando com Plano</h1>
+        </div>
+
+        <p class="section-desc">Com o UUID do plano em mãos, passe-o no campo <code>plan</code> ao criar um sub-tenant. O sistema detecta automaticamente que é um plano do revendedor (formato UUID) e ativa exatamente os módulos configurados.</p>
+
+        <h2>Comportamento do campo <code>plan</code></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Valor do campo <code>plan</code></th><th>Comportamento</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>a1b2c3d4-e5f6-7890-abcd-ef1234567890</code> (UUID)</td>
+                <td>Plano do revendedor — ativa os módulos configurados no plano. Valida que o plano pertence ao seu tenant e está ativo.</td>
+              </tr>
+              <tr>
+                <td><code>hub-ia-solo</code></td>
+                <td>Plano global — ativa o módulo <code>hub-ia</code> (legado, compatível)</td>
+              </tr>
+              <tr>
+                <td><em>omitido</em></td>
+                <td>Usa <code>hub-ia-solo</code> como padrão</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Resposta — campos relacionados ao plano</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Campo</th><th>Descrição</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>modules</code></td>
+                <td>Array com os IDs dos módulos ativados para o sub-tenant</td>
+              </tr>
+              <tr>
+                <td><code>plan</code></td>
+                <td>Plan ID de billing utilizado (<code>hub-ia-revendedor</code> quando plano do revendedor)</td>
+              </tr>
+              <tr>
+                <td><code>group</code></td>
+                <td>Nome do grupo de usuário criado/reutilizado para este conjunto de módulos</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div>Se o plano do revendedor for <strong>desativado</strong> após o provisionamento, os clientes já criados <strong>não</strong> perdem acesso. O plano é resolvido apenas no momento do provisionamento.</div>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Exemplo com plano do revendedor</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">curl</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">curl -X POST \
+  https://app.kemsolucoes.com.br/api/v1/provisioning/sub-tenants \
+  -H "X-API-Key: sua-api-key-aqui" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Maria Souza",
+    "email": "maria@email.com",
+    "cpf": "98765432100",
+    "phone": "11988887777",
+    "plan": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "send_welcome": true,
+    "metadata": {
+      "sgp_client_id": "33001",
+      "plano_internet": "500MB"
+    }
+  }'</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin:18px 0 8px;">Resposta 201</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": true,
+  "status": "created",
+  "data": {
+    "id": "b9c8d7e6-f5a4-3210-fedc-ba9876543210",
+    "email": "maria@email.com",
+    "name": "Maria Souza",
+    "plan": "hub-ia-revendedor",
+    "portal_url": "https://app.kemsolucoes.com.br",
+    "parent_tenant_id": "c130602d-7fcf-4623-966c-b91e19444b6f",
+    "group": "Internet 500MB + Hub IA",
+    "modules": ["hub-ia", "hub-ia-busca", "hub-ia-agentes"],
+    "credentials": {
+      "email": "maria@email.com",
+      "temporary_password": "HubIAzx9t42801"
+    },
+    "created_at": "2026-08-01T12:00:00Z"
+  }
+}</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin:18px 0 8px;">Erro — plano não encontrado</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": false,
+  "error": {
+    "code": "RESELLER_PLAN_NOT_FOUND",
+    "message": "Plano não encontrado ou inativo para este tenant.",
+    "field": "plan"
+  }
+}</code></pre>
         </div>
       </div>
     </div>
