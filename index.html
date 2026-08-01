@@ -943,7 +943,8 @@
     // TODO: substituir '350MB-STARTER-PRODUCT-ID' pelo UUID real do produto no grupo-il
     const PLANS = {
       '500mb-smart': {
-        productId: '1300061d-69c4-412b-a31f-bf30cd6dc36d',
+        productId: '1300061d-69c4-412b-a31f-bf30cd6dc36d', // UUID Supabase (lookup produto)
+        planId: 29,                                          // ID inteiro no SGP
         name: 'Combo Smart 500MB',
         priceLabel: '99,90',
         price: 99.90,
@@ -951,6 +952,7 @@
       },
       '500mb-ultra': {
         productId: '0942dcb4-3df4-4c47-8ed1-bf6f51514fc4',
+        planId: 32,
         name: 'Combo Ultra 500MB',
         priceLabel: '119,90',
         price: 119.90,
@@ -958,6 +960,7 @@
       },
       '800mb-ultra': {
         productId: '1d80c73b-9548-42be-913d-c9274ea12bac',
+        planId: 33,
         name: 'Combo Ultra 800MB',
         priceLabel: '149,90',
         price: 149.90,
@@ -1196,7 +1199,7 @@
       // Collect all data
       const payload = {
         // Plano
-        planId: plan.productId,
+        planId: plan.planId,
         productId: plan.productId,
         amount: plan.price,
         productName: plan.name,
