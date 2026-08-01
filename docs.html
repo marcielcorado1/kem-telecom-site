@@ -1,0 +1,2385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KemOS Docs — API para Integradores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-bg: #0f172a;
+      --sidebar-hover: #1e293b;
+      --sidebar-active-bg: #1e3a5f;
+      --sidebar-active-text: #3b82f6;
+      --sidebar-text: #94a3b8;
+      --sidebar-label: #475569;
+      --sidebar-width: 260px;
+      --code-panel-width: 420px;
+      --content-bg: #ffffff;
+      --content-text: #1e293b;
+      --content-muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #0d1117;
+      --blue: #3b82f6;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --purple: #8b5cf6;
+      --blue-light: #eff6ff;
+      --green-light: #f0fdf4;
+      --amber-light: #fffbeb;
+      --red-light: #fef2f2;
+      --callout-info-bg: #eff6ff;
+      --callout-info-border: #bfdbfe;
+      --callout-info-text: #1e40af;
+      --callout-warn-bg: #fffbeb;
+      --callout-warn-border: #fde68a;
+      --callout-warn-text: #92400e;
+      --radius: 8px;
+      --radius-sm: 5px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      color: var(--content-text);
+      background: var(--content-bg);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+    .sidebar-logo {
+      padding: 20px 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #1e293b;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+    }
+
+    .logo-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.3px;
+    }
+
+    .logo-suffix {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--sidebar-label);
+    }
+
+    .sidebar-nav {
+      padding: 16px 0 24px;
+      flex: 1;
+    }
+
+    .nav-section {
+      margin-bottom: 4px;
+    }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sidebar-label);
+      padding: 12px 20px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nav-section-label::after {
+      content: '▾';
+      font-size: 9px;
+      color: var(--sidebar-label);
+      margin-left: auto;
+      transition: transform 0.2s;
+    }
+
+    .nav-section.collapsed .nav-section-label::after {
+      transform: rotate(-90deg);
+    }
+
+    .nav-section-items {
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+      max-height: 600px;
+    }
+
+    .nav-section.collapsed .nav-section-items {
+      max-height: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 20px;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 450;
+      border-radius: 0;
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: var(--sidebar-hover);
+      color: #cbd5e1;
+    }
+
+    .nav-item.active {
+      background: var(--sidebar-active-bg);
+      color: var(--sidebar-active-text);
+      font-weight: 600;
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--blue);
+    }
+
+    .method-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 99px;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .badge-post { background: #1d4ed820; color: #60a5fa; border: 1px solid #1d4ed840; }
+    .badge-get  { background: #05603a20; color: #34d399; border: 1px solid #05603a30; }
+    .badge-patch { background: #78350f20; color: #fbbf24; border: 1px solid #78350f30; }
+    .badge-delete { background: #7f1d1d20; color: #f87171; border: 1px solid #7f1d1d30; }
+
+    /* ── MAIN LAYOUT ── */
+    .main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .content {
+      flex: 1;
+      min-width: 0;
+      padding: 0;
+    }
+
+    /* ── SECTIONS ── */
+    .doc-section {
+      display: grid;
+      grid-template-columns: 1fr var(--code-panel-width);
+      min-height: 100px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .doc-section.no-code {
+      grid-template-columns: 1fr;
+    }
+
+    .section-prose {
+      padding: 52px 48px 52px 52px;
+      min-width: 0;
+    }
+
+    .section-code-panel {
+      background: #0d1117;
+      border-left: 1px solid #21262d;
+      padding: 52px 24px 52px;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .section-code-panel::-webkit-scrollbar { width: 4px; }
+    .section-code-panel::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      margin-bottom: 28px;
+    }
+
+    .section-breadcrumb {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--content-text);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .method-badge-large {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 99px;
+      letter-spacing: 0.03em;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .badge-large-post { background: #1d4ed8; color: #fff; }
+    .badge-large-get { background: #059669; color: #fff; }
+    .badge-large-patch { background: #d97706; color: #fff; }
+    .badge-large-delete { background: #dc2626; color: #fff; }
+
+    .endpoint-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      color: var(--content-muted);
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      margin-bottom: 20px;
+      display: inline-block;
+      word-break: break-all;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #334155;
+      margin-bottom: 24px;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--content-text);
+      margin: 32px 0 12px;
+      letter-spacing: -0.3px;
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--content-text);
+      margin: 24px 0 10px;
+      letter-spacing: -0.2px;
+    }
+
+    p {
+      line-height: 1.7;
+      color: #334155;
+      margin-bottom: 14px;
+    }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin: 18px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .callout-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .callout.info {
+      background: var(--callout-info-bg);
+      border: 1px solid var(--callout-info-border);
+      color: var(--callout-info-text);
+    }
+
+    .callout.warning {
+      background: var(--callout-warn-bg);
+      border: 1px solid var(--callout-warn-border);
+      color: var(--callout-warn-text);
+    }
+
+    /* ── TABLES ── */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 18px 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    thead {
+      background: #f8fafc;
+    }
+
+    thead th {
+      font-weight: 600;
+      color: var(--content-muted);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover td {
+      background: #fafbfc;
+    }
+
+    .param-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    .param-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #7c3aed;
+      background: #f5f3ff;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .req-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .req-yes { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .req-no  { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+    /* ── CODE BLOCKS ── */
+    .code-block {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 14px 0;
+      border: 1px solid #21262d;
+    }
+
+    .code-block-header {
+      background: #161b22;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #21262d;
+    }
+
+    .code-lang {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: #7d8590;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid #30363d;
+      border-radius: 5px;
+      color: #7d8590;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 3px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .copy-btn:hover {
+      background: #21262d;
+      color: #c9d1d9;
+      border-color: #484f58;
+    }
+
+    .copy-btn.copied {
+      background: #0d4a2e;
+      color: #4ade80;
+      border-color: #16a34a40;
+    }
+
+    .code-block pre {
+      margin: 0;
+      overflow-x: auto;
+      padding: 18px;
+    }
+
+    .code-block pre code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.65;
+      background: transparent !important;
+      padding: 0 !important;
+    }
+
+    /* inline code */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* ── QUICK START CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      border-color: #bfdbfe;
+      box-shadow: 0 2px 12px #3b82f610;
+    }
+
+    .card-number {
+      width: 28px;
+      height: 28px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--content-text);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 12.5px;
+      color: var(--content-muted);
+      line-height: 1.5;
+    }
+
+    /* ── STEPS ── */
+    .steps {
+      margin: 20px 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 36px;
+      bottom: -16px;
+      width: 1px;
+      background: #e2e8f0;
+    }
+
+    .step:last-child::before {
+      display: none;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-content {
+      flex: 1;
+      padding-top: 4px;
+      min-width: 0;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--content-text);
+      margin-bottom: 6px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* ── STATUS CODES ── */
+    .status-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-2xx { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .status-4xx { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .status-5xx { background: #fdf4ff; color: #9333ea; border: 1px solid #e9d5ff; }
+
+    /* ── ERROR TABLE ── */
+    .error-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .error-4xx { color: #dc2626; }
+    .error-5xx { color: #9333ea; }
+
+    /* ── TRY IT ── */
+    .try-it {
+      margin: 20px 0 0;
+    }
+
+    .try-it-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--content-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .try-it-toggle:hover {
+      background: #f8fafc;
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .try-it-toggle .chevron {
+      transition: transform 0.2s;
+      font-size: 10px;
+    }
+
+    .try-it-toggle.open .chevron {
+      transform: rotate(90deg);
+    }
+
+    .try-it-panel {
+      display: none;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 10px;
+    }
+
+    .try-it-panel.open {
+      display: block;
+    }
+
+    .try-field {
+      margin-bottom: 12px;
+    }
+
+    .try-field label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--content-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .try-field input, .try-field textarea {
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--content-text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .try-field input:focus, .try-field textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px #3b82f620;
+    }
+
+    .try-field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .try-submit {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 9px 20px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.15s;
+    }
+
+    .try-submit:hover {
+      background: #2563eb;
+    }
+
+    .try-it-note {
+      font-size: 12px;
+      color: var(--content-muted);
+      margin-top: 10px;
+    }
+
+    /* ── HEADER BAR (mobile) ── */
+    .topbar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: var(--sidebar-bg);
+      z-index: 200;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .hamburger {
+      background: none;
+      border: none;
+      color: var(--sidebar-text);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      line-height: 1;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 99;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--content-muted);
+      font-size: 13px;
+      background: #fafbfc;
+      grid-column: 1 / -1;
+    }
+
+    /* ── SCROLL SPY ── */
+    :target {
+      scroll-margin-top: 24px;
+    }
+
+    /* ── RATE LIMIT INFO ── */
+    .rate-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 20px 0;
+    }
+
+    .rate-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .rate-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .rate-label {
+      font-size: 12.5px;
+      color: var(--content-muted);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 28px 0;
+    }
+
+    /* ── RESPONSE TABS ── */
+    .resp-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 0;
+    }
+
+    .resp-tab {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 14px;
+      cursor: pointer;
+      color: #7d8590;
+      border-radius: 5px 5px 0 0;
+      border: 1px solid transparent;
+      border-bottom: none;
+      transition: all 0.15s;
+      background: transparent;
+    }
+
+    .resp-tab.active {
+      background: #161b22;
+      color: #c9d1d9;
+      border-color: #21262d;
+      border-bottom-color: #0d1117;
+    }
+
+    .resp-tab-content {
+      display: none;
+    }
+
+    .resp-tab-content.active {
+      display: block;
+    }
+
+    .tag-created { color: #4ade80; font-size: 10px; font-weight: 700; background: #0d4a2e; border: 1px solid #16a34a40; padding: 2px 8px; border-radius: 99px; margin-left: 8px; }
+    .tag-ok { color: #93c5fd; font-size: 10px; font-weight: 700; background: #1e3a5f; border: 1px solid #3b82f640; padding: 2px 8px; border-radius: 99px; margin-left: 8px; }
+
+    /* ── WEBHOOK EVENT TABLE ── */
+    .event-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #a78bfa;
+      background: #1e1b4b30;
+      border: 1px solid #4c1d9540;
+      padding: 2px 9px;
+      border-radius: 5px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      :root { --code-panel-width: 340px; }
+    }
+
+    @media (max-width: 900px) {
+      .doc-section {
+        grid-template-columns: 1fr;
+      }
+      .section-code-panel {
+        position: static;
+        max-height: none;
+        border-left: none;
+        border-top: 1px solid #21262d;
+        padding: 28px 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .topbar { display: flex; }
+      .sidebar {
+        transform: translateX(-100%);
+        z-index: 150;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-overlay.open {
+        display: block;
+      }
+      .main {
+        margin-left: 0;
+        margin-top: 56px;
+      }
+      .section-prose {
+        padding: 28px 20px;
+      }
+      .cards {
+        grid-template-columns: 1fr;
+      }
+      .rate-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mobile topbar -->
+<div class="topbar" id="topbar">
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu">&#9776;</button>
+  <div class="logo-text">
+    <span class="logo-name">KemOS</span>
+    <span class="logo-suffix">docs</span>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">K</div>
+    <div class="logo-text">
+      <span class="logo-name">KemOS</span>
+      <span class="logo-suffix">docs</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <!-- INÍCIO -->
+    <div class="nav-section" id="sec-inicio">
+      <div class="nav-section-label" onclick="toggleSection('sec-inicio')">Início</div>
+      <div class="nav-section-items">
+        <a class="nav-item active" href="#bem-vindo" onclick="setActive(this)">Bem-vindo</a>
+        <a class="nav-item" href="#primeiros-passos" onclick="setActive(this)">Primeiros Passos</a>
+      </div>
+    </div>
+
+    <!-- AUTENTICAÇÃO -->
+    <div class="nav-section" id="sec-auth">
+      <div class="nav-section-label" onclick="toggleSection('sec-auth')">Autenticação</div>
+      <div class="nav-section-items">
+        <a class="nav-item" href="#api-keys" onclick="setActive(this)">API Keys</a>
+      </div>
+    </div>
+
+    <!-- PROVISIONING API -->
+    <div class="nav-section" id="sec-prov">
+      <div class="nav-section-label" onclick="toggleSection('sec-prov')">Provisioning API</div>
+      <div class="nav-section-items">
+        <a class="nav-item" href="#prov-overview" onclick="setActive(this)">Visão Geral</a>
+        <a class="nav-item" href="#prov-create" onclick="setActive(this)">
+          Criar Sub-tenant
+          <span class="method-badge badge-post">POST</span>
+        </a>
+        <a class="nav-item" href="#prov-list" onclick="setActive(this)">
+          Listar Sub-tenants
+          <span class="method-badge badge-get">GET</span>
+        </a>
+        <a class="nav-item" href="#prov-get" onclick="setActive(this)">
+          Buscar Sub-tenant
+          <span class="method-badge badge-get">GET</span>
+        </a>
+        <a class="nav-item" href="#prov-update" onclick="setActive(this)">
+          Atualizar Sub-tenant
+          <span class="method-badge badge-patch">PATCH</span>
+        </a>
+        <a class="nav-item" href="#prov-delete" onclick="setActive(this)">
+          Desativar Sub-tenant
+          <span class="method-badge badge-delete">DEL</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- WEBHOOKS -->
+    <div class="nav-section" id="sec-wh">
+      <div class="nav-section-label" onclick="toggleSection('sec-wh')">Webhooks</div>
+      <div class="nav-section-items">
+        <a class="nav-item" href="#wh-overview" onclick="setActive(this)">Visão Geral</a>
+        <a class="nav-item" href="#wh-events" onclick="setActive(this)">Eventos de Pagamento</a>
+      </div>
+    </div>
+
+    <!-- REFERÊNCIA -->
+    <div class="nav-section" id="sec-ref">
+      <div class="nav-section-label" onclick="toggleSection('sec-ref')">Referência</div>
+      <div class="nav-section-items">
+        <a class="nav-item" href="#error-codes" onclick="setActive(this)">Códigos de Erro</a>
+        <a class="nav-item" href="#rate-limits" onclick="setActive(this)">Rate Limits</a>
+      </div>
+    </div>
+
+  </nav>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="content">
+
+    <!-- ══════════════════════════════════
+         BEM-VINDO
+    ══════════════════════════════════ -->
+    <div class="doc-section no-code" id="bem-vindo">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Início</div>
+          <h1 class="section-title">KemOS API — Documentação para Integradores</h1>
+        </div>
+
+        <p class="section-desc">A API do KemOS permite que ISPs e revendedores provisionem automaticamente acesso ao <strong>Hub de IA</strong> para seus clientes de internet. Integre seu formulário de cadastro, ERP, sistema de billing ou SGP diretamente com o KemOS.</p>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-number">1</div>
+            <div class="card-title">Gerar sua API Key</div>
+            <div class="card-desc">Acesse Configurações → Integrações → Chaves de API para gerar seu token de acesso.</div>
+          </div>
+          <div class="card">
+            <div class="card-number">2</div>
+            <div class="card-title">Criar seu primeiro sub-tenant</div>
+            <div class="card-desc"><code>POST /api/v1/provisioning/sub-tenants</code> para ativar o Hub IA de um cliente.</div>
+          </div>
+          <div class="card">
+            <div class="card-number">3</div>
+            <div class="card-title">Configurar Webhooks</div>
+            <div class="card-desc">Receba notificações em tempo real quando um sub-tenant for ativado ou alterado.</div>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">ℹ</span>
+          <span>A API do KemOS segue as convenções REST. Todas as respostas são em <strong>JSON</strong>. Use <code>Content-Type: application/json</code> em todas as requisições com body.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PRIMEIROS PASSOS
+    ══════════════════════════════════ -->
+    <div class="doc-section no-code" id="primeiros-passos">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Início</div>
+          <h1 class="section-title">Primeiros Passos</h1>
+        </div>
+
+        <p class="section-desc">Siga os três passos abaixo para fazer sua primeira chamada à API em menos de 5 minutos.</p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <div class="step-title">Gere sua API Key</div>
+              <div class="step-desc">No painel do KemOS, acesse <strong>Configurações → Integrações → Chaves de API → Gerar Nova Chave</strong>. Guarde o token com segurança — ele não será exibido novamente após ser gerado.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <div class="step-title">Faça sua primeira chamada</div>
+              <div class="step-desc">Use a API Key no header <code>X-API-Key</code> de todas as requisições. Teste com um <code>GET /api/v1/provisioning/sub-tenants</code> para listar os clientes existentes.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <div class="step-title">Configure um Webhook</div>
+              <div class="step-desc">Acesse <strong>Configurações → Integrações → Webhooks</strong> e registre um endpoint HTTPS para receber notificações de ativação e pagamento em tempo real.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">ℹ</span>
+          <div>Cada tenant (ISP/revendedor) tem suas próprias API Keys. Sub-tenants criados via API são automaticamente vinculados ao seu tenant e ao grupo de usuários padrão <strong>Hub IA</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         AUTENTICAÇÃO
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="api-keys">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Autenticação</div>
+          <h1 class="section-title">API Keys</h1>
+        </div>
+
+        <p class="section-desc">O KemOS utiliza autenticação via <strong>API Key</strong> passada no header de cada requisição. Não há necessidade de tokens OAuth ou sessões.</p>
+
+        <h2>Headers obrigatórios</h2>
+        <p>Todas as requisições devem incluir os seguintes headers:</p>
+
+        <div class="callout warning">
+          <span class="callout-icon">⚠</span>
+          <div><strong>Nunca exponha sua API Key no frontend.</strong> Use sempre server-side — em n8n, backend próprio ou qualquer ambiente que não seja acessível pelo navegador do usuário final.</div>
+        </div>
+
+        <h2>Como gerar uma API Key</h2>
+        <p>Acesse <strong>Configurações → Integrações → Chaves de API → Gerar Nova Chave</strong> no painel do KemOS. Defina um nome descritivo para identificar a origem da integração (ex: "SGP Produção", "n8n Billing").</p>
+
+        <div class="divider"></div>
+
+        <h3>Rotação de chaves</h3>
+        <p>Recomendamos rotacionar as API Keys a cada 90 dias ou sempre que um colaborador com acesso à chave deixar o time. Chaves revogadas param de funcionar imediatamente.</p>
+      </div>
+
+      <div class="section-code-panel">
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">http headers</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-http">X-API-Key: sua-api-key-aqui
+Content-Type: application/json</code></pre>
+        </div>
+
+        <div style="margin-top:20px;">
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">curl — exemplo com auth</span>
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copiar
+              </button>
+            </div>
+            <pre><code class="language-bash">curl -X GET \
+  https://app.kemsolucoes.com.br/api/v1/provisioning/sub-tenants \
+  -H "X-API-Key: sua-api-key-aqui" \
+  -H "Content-Type: application/json"</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PROVISIONING — VISÃO GERAL
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="prov-overview">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Provisioning API</div>
+          <h1 class="section-title">Visão Geral</h1>
+        </div>
+
+        <p class="section-desc">A Provisioning API permite criar e gerenciar <strong>sub-tenants</strong> — os clientes finais do seu provedor que terão acesso ao Hub de IA. Sub-tenants herdam automaticamente suas configurações de integração (EvoGo, n8n, SMTP) sem precisar configurar nada.</p>
+
+        <h2>Base URL</h2>
+        <code class="endpoint-url">https://app.kemsolucoes.com.br/api/v1</code>
+
+        <h2>Recursos disponíveis</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Método</th>
+                <th>Endpoint</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="method-badge-large badge-large-post">POST</span></td>
+                <td><code>/provisioning/sub-tenants</code></td>
+                <td>Cria e ativa um sub-tenant</td>
+              </tr>
+              <tr>
+                <td><span class="method-badge-large badge-large-get">GET</span></td>
+                <td><code>/provisioning/sub-tenants</code></td>
+                <td>Lista sub-tenants paginados</td>
+              </tr>
+              <tr>
+                <td><span class="method-badge-large badge-large-get">GET</span></td>
+                <td><code>/provisioning/sub-tenants/{id}</code></td>
+                <td>Busca um sub-tenant por UUID</td>
+              </tr>
+              <tr>
+                <td><span class="method-badge-large badge-large-patch">PATCH</span></td>
+                <td><code>/provisioning/sub-tenants/{id}</code></td>
+                <td>Atualiza dados do sub-tenant</td>
+              </tr>
+              <tr>
+                <td><span class="method-badge-large badge-large-delete">DELETE</span></td>
+                <td><code>/provisioning/sub-tenants/{id}</code></td>
+                <td>Desativa o acesso ao Hub IA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Exemplo mínimo</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">bash</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">BASE="https://app.kemsolucoes.com.br/api/v1"
+KEY="sua-api-key-aqui"
+
+# Listar sub-tenants
+curl "$BASE/provisioning/sub-tenants" \
+  -H "X-API-Key: $KEY"</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         POST — Criar Sub-tenant
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="prov-create">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Provisioning API</div>
+          <h1 class="section-title">
+            <span class="method-badge-large badge-large-post">POST</span>
+            Criar Sub-tenant
+          </h1>
+          <div class="endpoint-url">/api/v1/provisioning/sub-tenants</div>
+        </div>
+
+        <p class="section-desc">Cria um novo cliente e ativa o Hub de IA automaticamente. Se o e-mail já existir no sistema, retorna o sub-tenant existente sem criar duplicata.</p>
+
+        <h2>Parâmetros do body</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Campo</th>
+                <th>Tipo</th>
+                <th>Required</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">name</span></td>
+                <td><span class="param-type">string</span></td>
+                <td><span class="req-badge req-yes">✅ Sim</span></td>
+                <td>Nome completo do cliente</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">email</span></td>
+                <td><span class="param-type">string</span></td>
+                <td><span class="req-badge req-yes">✅ Sim</span></td>
+                <td>E-mail de acesso ao Hub IA</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">cpf</span></td>
+                <td><span class="param-type">string</span></td>
+                <td><span class="req-badge req-yes">✅ Sim</span></td>
+                <td>CPF somente números (11 dígitos)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">phone</span></td>
+                <td><span class="param-type">string</span></td>
+                <td><span class="req-badge req-yes">✅ Sim</span></td>
+                <td>Telefone com DDD, somente números</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">plan</span></td>
+                <td><span class="param-type">string</span></td>
+                <td><span class="req-badge req-yes">✅ Sim</span></td>
+                <td>Plano contratado. Ex: <code>"hub-ia-solo"</code></td>
+              </tr>
+              <tr>
+                <td><span class="param-name">password</span></td>
+                <td><span class="param-type">string</span></td>
+                <td><span class="req-badge req-no">Não</span></td>
+                <td>Senha inicial. Se omitido, gera automaticamente</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">send_welcome</span></td>
+                <td><span class="param-type">boolean</span></td>
+                <td><span class="req-badge req-no">Não</span></td>
+                <td>Envia boas-vindas por e-mail/WhatsApp (padrão: <code>true</code>)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">metadata</span></td>
+                <td><span class="param-type">object</span></td>
+                <td><span class="req-badge req-no">Não</span></td>
+                <td>Campos livres para referência interna (SGP ID, contrato etc.)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Códigos de status</h2>
+        <div class="status-list">
+          <span class="status-chip status-2xx">201 Created</span>
+          <span class="status-chip status-2xx">200 OK — já existe</span>
+          <span class="status-chip status-4xx">400 Bad Request</span>
+          <span class="status-chip status-4xx">401 Unauthorized</span>
+          <span class="status-chip status-4xx">422 Dados inválidos</span>
+          <span class="status-chip status-5xx">500 Server Error</span>
+        </div>
+
+        <div class="try-it">
+          <button class="try-it-toggle" onclick="toggleTryIt(this)">
+            <span>&#9658;</span><span class="chevron"></span> Testar endpoint
+          </button>
+          <div class="try-it-panel">
+            <div class="try-field">
+              <label>X-API-Key</label>
+              <input type="text" placeholder="sua-api-key-aqui" />
+            </div>
+            <div class="try-field">
+              <label>Body (JSON)</label>
+              <textarea>{"name":"João da Silva","email":"joao@email.com","cpf":"12345678900","phone":"11999999999","plan":"hub-ia-solo","send_welcome":true}</textarea>
+            </div>
+            <button class="try-submit">Enviar requisição</button>
+            <p class="try-it-note">Interface demonstrativa — nenhuma requisição real é enviada por esta página.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Requisição</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">curl</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">curl -X POST \
+  https://app.kemsolucoes.com.br/api/v1/provisioning/sub-tenants \
+  -H "X-API-Key: sua-api-key-aqui" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João da Silva",
+    "email": "joao@email.com",
+    "cpf": "12345678900",
+    "phone": "11999999999",
+    "plan": "hub-ia-solo",
+    "send_welcome": true,
+    "metadata": {
+      "sgp_client_id": "22776",
+      "contrato": "22846"
+    }
+  }'</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin: 18px 0 8px;">Respostas</p>
+
+        <div class="resp-tabs">
+          <button class="resp-tab active" onclick="switchTab(this, 'r-create-201')">201 <span class="tag-created">CREATED</span></button>
+          <button class="resp-tab" onclick="switchTab(this, 'r-create-200')">200 <span class="tag-ok">EXISTS</span></button>
+        </div>
+
+        <div id="r-create-201" class="resp-tab-content active">
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">json</span>
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copiar
+              </button>
+            </div>
+            <pre><code class="language-json">{
+  "ok": true,
+  "status": "created",
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "email": "joao@email.com",
+    "name": "João da Silva",
+    "plan": "hub-ia-solo",
+    "portal_url": "https://app.kemsolucoes.com.br",
+    "parent_tenant_id": "c130602d-7fcf-4623-966c-b91e19444b6f",
+    "group": "Clientes Hub IA",
+    "modules": ["hub-ia"],
+    "credentials": {
+      "email": "joao@email.com",
+      "temporary_password": "Mudar@2026Hub"
+    },
+    "created_at": "2026-07-31T22:00:00Z"
+  }
+}</code></pre>
+          </div>
+        </div>
+
+        <div id="r-create-200" class="resp-tab-content">
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">json</span>
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copiar
+              </button>
+            </div>
+            <pre><code class="language-json">{
+  "ok": true,
+  "status": "already_active",
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "email": "joao@email.com"
+  }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         GET — Listar Sub-tenants
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="prov-list">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Provisioning API</div>
+          <h1 class="section-title">
+            <span class="method-badge-large badge-large-get">GET</span>
+            Listar Sub-tenants
+          </h1>
+          <div class="endpoint-url">/api/v1/provisioning/sub-tenants</div>
+        </div>
+
+        <p class="section-desc">Retorna uma lista paginada de todos os sub-tenants vinculados ao seu tenant, com suporte a filtros por status e busca textual.</p>
+
+        <h2>Query parameters</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Parâmetro</th>
+                <th>Tipo</th>
+                <th>Padrão</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">page</span></td>
+                <td><span class="param-type">integer</span></td>
+                <td><code>1</code></td>
+                <td>Número da página</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">limit</span></td>
+                <td><span class="param-type">integer</span></td>
+                <td><code>20</code></td>
+                <td>Itens por página (máx. 100)</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">status</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>—</td>
+                <td>Filtrar por status: <code>active</code> ou <code>inactive</code></td>
+              </tr>
+              <tr>
+                <td><span class="param-name">search</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>—</td>
+                <td>Busca por nome ou e-mail</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Códigos de status</h2>
+        <div class="status-list">
+          <span class="status-chip status-2xx">200 OK</span>
+          <span class="status-chip status-4xx">401 Unauthorized</span>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Requisição</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">curl</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">curl -X GET \
+  "https://app.kemsolucoes.com.br/api/v1/provisioning/sub-tenants?page=1&limit=20&status=active" \
+  -H "X-API-Key: sua-api-key-aqui"</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin: 18px 0 8px;">Resposta 200</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": true,
+  "data": [
+    {
+      "id": "a1b2c3d4-...",
+      "email": "joao@email.com",
+      "name": "João da Silva",
+      "plan": "hub-ia-solo",
+      "status": "active",
+      "created_at": "2026-07-31T22:00:00Z"
+    }
+  ],
+  "meta": {
+    "total": 47,
+    "page": 1,
+    "limit": 20,
+    "pages": 3
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         GET — Buscar Sub-tenant
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="prov-get">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Provisioning API</div>
+          <h1 class="section-title">
+            <span class="method-badge-large badge-large-get">GET</span>
+            Buscar Sub-tenant
+          </h1>
+          <div class="endpoint-url">/api/v1/provisioning/sub-tenants/{id}</div>
+        </div>
+
+        <p class="section-desc">Retorna os dados completos de um sub-tenant específico, incluindo plano, status, módulos ativos e metadata.</p>
+
+        <h2>Path parameters</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Parâmetro</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">id</span></td>
+                <td><span class="param-type">uuid</span></td>
+                <td>UUID do sub-tenant (retornado no POST)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Códigos de status</h2>
+        <div class="status-list">
+          <span class="status-chip status-2xx">200 OK</span>
+          <span class="status-chip status-4xx">404 Not Found</span>
+          <span class="status-chip status-4xx">401 Unauthorized</span>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Requisição</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">curl</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">curl -X GET \
+  "https://app.kemsolucoes.com.br/api/v1/provisioning/sub-tenants/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
+  -H "X-API-Key: sua-api-key-aqui"</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin: 18px 0 8px;">Resposta 200</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": true,
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "email": "joao@email.com",
+    "name": "João da Silva",
+    "phone": "11999999999",
+    "plan": "hub-ia-solo",
+    "status": "active",
+    "modules": ["hub-ia"],
+    "group": "Clientes Hub IA",
+    "parent_tenant_id": "c130602d-7fcf-4623-966c-b91e19444b6f",
+    "metadata": {
+      "sgp_client_id": "22776",
+      "contrato": "22846"
+    },
+    "created_at": "2026-07-31T22:00:00Z",
+    "updated_at": "2026-07-31T22:00:00Z"
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         PATCH — Atualizar Sub-tenant
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="prov-update">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Provisioning API</div>
+          <h1 class="section-title">
+            <span class="method-badge-large badge-large-patch">PATCH</span>
+            Atualizar Sub-tenant
+          </h1>
+          <div class="endpoint-url">/api/v1/provisioning/sub-tenants/{id}</div>
+        </div>
+
+        <p class="section-desc">Atualiza dados de um sub-tenant existente. Apenas os campos enviados são modificados — campos omitidos permanecem inalterados.</p>
+
+        <h2>Body (campos opcionais)</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Campo</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">name</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Nome completo atualizado</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">phone</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Telefone somente números</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">metadata</span></td>
+                <td><span class="param-type">object</span></td>
+                <td>Substitui o objeto metadata completo</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Códigos de status</h2>
+        <div class="status-list">
+          <span class="status-chip status-2xx">200 OK</span>
+          <span class="status-chip status-4xx">404 Not Found</span>
+          <span class="status-chip status-4xx">401 Unauthorized</span>
+          <span class="status-chip status-4xx">422 Dados inválidos</span>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Requisição</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">curl</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">curl -X PATCH \
+  "https://app.kemsolucoes.com.br/api/v1/provisioning/sub-tenants/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
+  -H "X-API-Key: sua-api-key-aqui" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "11888888888",
+    "metadata": {
+      "sgp_client_id": "22776",
+      "contrato": "22846",
+      "atualizado_em": "2026-07-31"
+    }
+  }'</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin: 18px 0 8px;">Resposta 200</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": true,
+  "status": "updated",
+  "data": {
+    "id": "a1b2c3d4-...",
+    "phone": "11888888888",
+    "updated_at": "2026-07-31T22:05:00Z"
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         DELETE — Desativar Sub-tenant
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="prov-delete">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Provisioning API</div>
+          <h1 class="section-title">
+            <span class="method-badge-large badge-large-delete">DELETE</span>
+            Desativar Sub-tenant
+          </h1>
+          <div class="endpoint-url">/api/v1/provisioning/sub-tenants/{id}</div>
+        </div>
+
+        <p class="section-desc">Desativa o acesso do sub-tenant ao Hub de IA. O usuário e seus dados são <strong>preservados</strong> — a operação é reversível e não exclui nenhum registro permanentemente.</p>
+
+        <div class="callout info">
+          <span class="callout-icon">ℹ</span>
+          <div>Para reativar um sub-tenant desativado, utilize <code>PATCH /sub-tenants/{id}</code> com <code>"status": "active"</code>, ou reative diretamente pelo painel KemOS.</div>
+        </div>
+
+        <h2>Path parameters</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Parâmetro</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">id</span></td>
+                <td><span class="param-type">uuid</span></td>
+                <td>UUID do sub-tenant a desativar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Códigos de status</h2>
+        <div class="status-list">
+          <span class="status-chip status-2xx">200 OK</span>
+          <span class="status-chip status-4xx">404 Not Found</span>
+          <span class="status-chip status-4xx">401 Unauthorized</span>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Requisição</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">curl</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-bash">curl -X DELETE \
+  "https://app.kemsolucoes.com.br/api/v1/provisioning/sub-tenants/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
+  -H "X-API-Key: sua-api-key-aqui"</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin: 18px 0 8px;">Resposta 200</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": true,
+  "status": "deactivated"
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         WEBHOOKS — VISÃO GERAL
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="wh-overview">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Webhooks</div>
+          <h1 class="section-title">Visão Geral</h1>
+        </div>
+
+        <p class="section-desc">Configure um endpoint HTTPS no seu servidor para receber notificações do KemOS quando eventos relevantes ocorrerem — ativações, desativações e pagamentos confirmados.</p>
+
+        <h2>Configuração</h2>
+        <p>Acesse <strong>Configurações → Integrações → Webhooks → URL do Endpoint</strong> para registrar seu endpoint. O KemOS fará um <code>POST</code> para essa URL sempre que um evento for disparado.</p>
+
+        <h2>Verificação de assinatura</h2>
+        <p>Cada requisição de webhook inclui o header <code>X-KemOS-Signature</code> com um HMAC-SHA256 gerado a partir do body usando seu <strong>webhook secret</strong>. Sempre valide a assinatura antes de processar o evento.</p>
+
+        <h3>Validar em Node.js</h3>
+
+        <h2>Eventos disponíveis</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Evento</th>
+                <th>Quando dispara</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="event-badge">sub_tenant.created</span></td>
+                <td>Sub-tenant criado com sucesso via API ou painel</td>
+              </tr>
+              <tr>
+                <td><span class="event-badge">sub_tenant.activated</span></td>
+                <td>Hub IA ativado para o sub-tenant</td>
+              </tr>
+              <tr>
+                <td><span class="event-badge">sub_tenant.deactivated</span></td>
+                <td>Acesso desativado via API ou painel</td>
+              </tr>
+              <tr>
+                <td><span class="event-badge">payment.received</span></td>
+                <td>Pagamento confirmado (Pix, boleto ou cartão)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Retry policy</h2>
+        <p>O KemOS tenta entregar cada evento até <strong>3 vezes</strong> em caso de falha (timeout ou status &gt;= 400). O intervalo entre tentativas é de 30s, 5min e 30min respectivamente. Retorne <code>2xx</code> para confirmar o recebimento.</p>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Validar assinatura</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">javascript</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-javascript">const crypto = require('crypto');
+
+function validateWebhook(req, secret) {
+  const signature = req.headers['x-kemos-signature'];
+  const body = JSON.stringify(req.body);
+
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(body)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}</code></pre>
+        </div>
+
+        <div style="margin-top:18px;">
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">python</span>
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copiar
+              </button>
+            </div>
+            <pre><code class="language-python">import hmac, hashlib
+
+def validate_webhook(body: bytes, secret: str, sig: str) -> bool:
+    expected = hmac.new(
+        secret.encode(), body, hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, sig)</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         WEBHOOKS — Eventos de Pagamento
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="wh-events">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Webhooks</div>
+          <h1 class="section-title">Eventos de Pagamento</h1>
+        </div>
+
+        <p class="section-desc">Todos os eventos de webhook seguem a mesma estrutura de envelope. O campo <code>event</code> identifica o tipo e o campo <code>data</code> contém os dados específicos do recurso afetado.</p>
+
+        <h2>Estrutura do envelope</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Campo</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="param-name">event</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>Identificador do evento</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">timestamp</span></td>
+                <td><span class="param-type">string</span></td>
+                <td>ISO 8601 UTC do momento do evento</td>
+              </tr>
+              <tr>
+                <td><span class="param-name">data</span></td>
+                <td><span class="param-type">object</span></td>
+                <td>Dados do recurso associado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">ℹ</span>
+          <div>Webhooks podem chegar fora de ordem em casos de retry. Use o campo <code>timestamp</code> para ordenar eventos e o <code>id</code> do sub-tenant para deduplicação.</div>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Payload — sub_tenant.activated</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "event": "sub_tenant.activated",
+  "timestamp": "2026-07-31T22:15:29Z",
+  "data": {
+    "id": "a1b2c3d4-...",
+    "email": "joao@email.com",
+    "name": "João da Silva",
+    "plan": "hub-ia-solo",
+    "parent_tenant_id": "c130602d-7fcf-4623-966c-b91e19444b6f"
+  }
+}</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin: 18px 0 8px;">Payload — payment.received</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "event": "payment.received",
+  "timestamp": "2026-07-31T22:20:00Z",
+  "data": {
+    "sub_tenant_id": "a1b2c3d4-...",
+    "amount": 4990,
+    "currency": "BRL",
+    "method": "pix",
+    "reference": "PAY-2026-07-31-001"
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         CÓDIGOS DE ERRO
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="error-codes">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Referência</div>
+          <h1 class="section-title">Códigos de Erro</h1>
+        </div>
+
+        <p class="section-desc">Todas as respostas de erro seguem o mesmo formato de envelope com <code>"ok": false</code> e um objeto <code>error</code> detalhando a causa.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="error-code error-4xx">400</span></td>
+                <td>Bad Request</td>
+                <td>Parâmetros faltando ou com formato inválido</td>
+              </tr>
+              <tr>
+                <td><span class="error-code error-4xx">401</span></td>
+                <td>Unauthorized</td>
+                <td>API Key ausente, inválida ou revogada</td>
+              </tr>
+              <tr>
+                <td><span class="error-code error-4xx">403</span></td>
+                <td>Forbidden</td>
+                <td>Sem permissão para acessar este recurso</td>
+              </tr>
+              <tr>
+                <td><span class="error-code error-4xx">404</span></td>
+                <td>Not Found</td>
+                <td>Sub-tenant não encontrado para o ID informado</td>
+              </tr>
+              <tr>
+                <td><span class="error-code error-4xx">409</span></td>
+                <td>Conflict</td>
+                <td>E-mail já cadastrado com CPF diferente</td>
+              </tr>
+              <tr>
+                <td><span class="error-code error-4xx">422</span></td>
+                <td>Unprocessable Entity</td>
+                <td>Dados válidos mas regra de negócio violada</td>
+              </tr>
+              <tr>
+                <td><span class="error-code error-4xx">429</span></td>
+                <td>Too Many Requests</td>
+                <td>Rate limit excedido — aguarde e tente novamente</td>
+              </tr>
+              <tr>
+                <td><span class="error-code error-5xx">500</span></td>
+                <td>Internal Server Error</td>
+                <td>Erro no servidor — abra um ticket de suporte</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Formato do erro</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": false,
+  "error": {
+    "code": "INVALID_CPF",
+    "message": "O CPF informado não é válido.",
+    "field": "cpf"
+  }
+}</code></pre>
+        </div>
+
+        <div style="margin-top:18px;">
+          <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Erro 422 — regra de negócio</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-lang">json</span>
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copiar
+              </button>
+            </div>
+            <pre><code class="language-json">{
+  "ok": false,
+  "error": {
+    "code": "PLAN_NOT_ALLOWED",
+    "message": "O plano 'hub-ia-enterprise' não está disponível para seu tenant.",
+    "field": "plan"
+  }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         RATE LIMITS
+    ══════════════════════════════════ -->
+    <div class="doc-section" id="rate-limits">
+      <div class="section-prose">
+        <div class="section-header">
+          <div class="section-breadcrumb">Referência</div>
+          <h1 class="section-title">Rate Limits</h1>
+        </div>
+
+        <p class="section-desc">Para garantir estabilidade da plataforma, a API aplica limites de requisições por API Key. Os limites são compartilhados entre todos os endpoints.</p>
+
+        <div class="rate-grid">
+          <div class="rate-card">
+            <div class="rate-value">100</div>
+            <div class="rate-label">requisições por minuto</div>
+          </div>
+          <div class="rate-card">
+            <div class="rate-value">1.000</div>
+            <div class="rate-label">requisições por hora</div>
+          </div>
+        </div>
+
+        <h2>Headers de controle</h2>
+        <p>Cada resposta da API inclui os seguintes headers para monitorar seu consumo:</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>X-RateLimit-Limit</code></td>
+                <td>Limite máximo de requisições no período</td>
+              </tr>
+              <tr>
+                <td><code>X-RateLimit-Remaining</code></td>
+                <td>Requisições restantes no período atual</td>
+              </tr>
+              <tr>
+                <td><code>X-RateLimit-Reset</code></td>
+                <td>Timestamp Unix de quando o limite é resetado</td>
+              </tr>
+              <tr>
+                <td><code>Retry-After</code></td>
+                <td>Segundos para aguardar (presente apenas em 429)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout warning">
+          <span class="callout-icon">⚠</span>
+          <div>Se você precisar de limites maiores para integrações de alto volume (SGPs, ERPs com muitos clientes), entre em contato com o suporte para habilitar um plano API dedicado.</div>
+        </div>
+      </div>
+
+      <div class="section-code-panel">
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;">Headers — exemplo de resposta</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">http response headers</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-http">HTTP/1.1 200 OK
+Content-Type: application/json
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 84
+X-RateLimit-Reset: 1753996800</code></pre>
+        </div>
+
+        <p style="color:#7d8590; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin: 18px 0 8px;">Resposta 429 — rate limit excedido</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-lang">json</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copiar
+            </button>
+          </div>
+          <pre><code class="language-json">{
+  "ok": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Limite de requisições atingido. Tente novamente em 42 segundos.",
+    "retry_after": 42
+  }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      KemOS API v1 — &copy; 2026 Kem Soluções
+    </div>
+
+  </div><!-- .content -->
+</div><!-- .main -->
+
+<script>
+  // ── Highlight.js ──
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre code').forEach(el => {
+      hljs.highlightElement(el);
+    });
+  });
+
+  // ── Copy button ──
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  // ── Sidebar nav active ──
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    // Close mobile sidebar on nav click
+    if (window.innerWidth < 768) closeSidebar();
+  }
+
+  // ── Section collapse ──
+  function toggleSection(id) {
+    const sec = document.getElementById(id);
+    sec.classList.toggle('collapsed');
+  }
+
+  // ── Tab switching ──
+  function switchTab(btn, targetId) {
+    const panel = btn.closest('.section-code-panel');
+    panel.querySelectorAll('.resp-tab').forEach(t => t.classList.remove('active'));
+    panel.querySelectorAll('.resp-tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(targetId).classList.add('active');
+  }
+
+  // ── Try it toggle ──
+  function toggleTryIt(btn) {
+    btn.classList.toggle('open');
+    const panel = btn.nextElementSibling;
+    panel.classList.toggle('open');
+  }
+
+  // ── Mobile sidebar ──
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger-btn');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger && hamburger.addEventListener('click', openSidebar);
+  overlay && overlay.addEventListener('click', closeSidebar);
+
+  // ── Scroll spy ──
+  const sections = [
+    'bem-vindo','primeiros-passos','api-keys',
+    'prov-overview','prov-create','prov-list','prov-get','prov-update','prov-delete',
+    'wh-overview','wh-events','error-codes','rate-limits'
+  ];
+
+  const navLinks = {};
+  sections.forEach(id => {
+    const link = document.querySelector(`.nav-item[href="#${id}"]`);
+    if (link) navLinks[id] = link;
+  });
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        let current = sections[0];
+        sections.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            const top = el.getBoundingClientRect().top;
+            if (top <= 100) current = id;
+          }
+        });
+        Object.keys(navLinks).forEach(id => {
+          navLinks[id].classList.toggle('active', id === current);
+        });
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+</script>
+</body>
+</html>
